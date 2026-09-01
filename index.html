@@ -191,17 +191,14 @@
     </div>
 
     <script>
-        // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางในเครื่องหมายคำพูดด้านล่างนี้ได้เลยครับ
-        const scriptURL = 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้';
+        // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางในเครื่องหมายคำพูดด้านล่างนี้เลยครับ!
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyEGy_cwOvLOCK-xnvErBBxjZ_jk6d0pW-wFmbo_9DngcvuFqNembEV2fclSnuYnWHXtg/exec';
 
-        // โหลดข้อมูลเมื่อเปิดเว็บ
         window.onload = loadData;
-
-        // อัปเดตข้อมูลอัตโนมัติทุกๆ 30 วินาที
         setInterval(loadData, 30000);
 
         function loadData() {
-            if (!scriptURL || scriptURL === 'https://script.google.com/macros/s/AKfycbxOUCFvHgE_e7-Zp2SJVJcquD7htGs-0z8hYeElVICYL9xMqha5hs9buf_tDlgthP_NbQ/exec') {
+            if (!scriptURL || scriptURL === 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้') {
                 document.getElementById('statusList').innerHTML = '<div style="color: #f39c12; text-align: center; margin-top: 30px;">⚠️ กรุณาใส่ Web App URL ในโค้ดก่อนครับ</div>';
                 return;
             }
@@ -209,19 +206,23 @@
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
                 .then(result => {
+                    // เพิ่มเช็ค Error จากระบบหลังบ้าน
+                    if(result.status === "error") {
+                        document.getElementById('statusList').innerHTML = `<div style="color: #d63031; text-align: center; margin-top: 30px;">❌ เกิดข้อผิดพลาดในชีท:<br>${result.message}</div>`;
+                        return;
+                    }
+
                     const data = result.data;
                     const select = document.getElementById('mechanicName');
                     const statusList = document.getElementById('statusList');
                     
                     const currentValue = select.value;
 
-                    // แจ้งเตือนชัดเจนถ้าชีทรายชื่อว่างเปล่า
                     if (!data || data.length === 0) {
-                        statusList.innerHTML = '<div style="color: #f39c12; text-align: center; margin-top: 30px; line-height: 1.6;">⚠️ เชื่อมต่อสำเร็จ แต่ไม่พบรายชื่อช่าง!<br><span style="font-size: 15px; color: #aaa;">โปรดตรวจสอบว่าได้ใส่ชื่อช่างไว้ในชีท "รายชื่อ" แล้วหรือไม่</span></div>';
+                        statusList.innerHTML = '<div style="color: #f39c12; text-align: center; margin-top: 30px; line-height: 1.6;">⚠️ ไม่พบรายชื่อช่าง<br><span style="font-size: 15px; color: #aaa;">โปรดตรวจสอบคอลัมน์ B ในชีท "รายชื่อ"</span></div>';
                         return;
                     }
 
-                    // ป้องกันการรีเฟรช Dropdown ถ้ามีคนกำลังกดเลือกชื่ออยู่
                     if (select.options.length <= 1) {
                         select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
                         data.forEach(user => {
@@ -232,7 +233,6 @@
                         });
                     }
 
-                    // สร้าง UI สถานะ
                     statusList.innerHTML = '';
                     data.forEach(user => {
                         let statusHtml = `
@@ -245,7 +245,7 @@
                                 </div>
                                 <div class="status-indicator">
                                     <span class="status-text" style="color: ${user.isOnline ? '#00e676' : '#636e72'}">
-                                        ${user.isOnline ? 'เข้าเวรอยู่' : 'ออกเวรอยู่'}
+                                        ${user.isOnline ? 'On Duty' : 'Off Duty'}
                                     </span>
                                     <div class="dot ${user.isOnline ? 'dot-online' : 'dot-offline'}"></div>
                                     ${user.isOnline ? `<span class="time-in">${user.timeInText}</span>` : `<span class="time-in" style="opacity: 0">00:00</span>`}
@@ -259,7 +259,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
-                    document.getElementById('statusList').innerHTML = '<div style="color: #d63031; text-align: center; margin-top: 30px; line-height: 1.6;">❌ โหลดข้อมูลล้มเหลว<br><span style="font-size: 15px; color: #aaa;">โปรดเช็คการ Deploy ว่าเป็น "New deployment" และตั้งสิทธิ์เป็น "ทุกคน" หรือไม่</span></div>';
+                    document.getElementById('statusList').innerHTML = '<div style="color: #d63031; text-align: center; margin-top: 30px; line-height: 1.6;">❌ โหลดข้อมูลล้มเหลว<br><span style="font-size: 15px; color: #aaa;">เช็ค URL หรือสิทธิ์เป็น "ทุกคน (Anyone)" ตอน Deploy หรือยัง?</span></div>';
                 });
         }
 
