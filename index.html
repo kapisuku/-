@@ -80,9 +80,13 @@
 
         h2 {
             margin-top: 0; font-size: 24px;
+            color: var(--summer-blue); font-weight: 800;
+        }
+
+        .header-title-container {
+            display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 15px; margin-bottom: 25px;
-            color: var(--summer-blue); font-weight: 800;
         }
 
         /* ฟอร์มลงเวลา */
@@ -107,15 +111,15 @@
         .btn-out:hover { filter: brightness(1.15); transform: translateY(-2px); }
         button:disabled { filter: grayscale(1); cursor: not-allowed; transform: none; }
 
-        /* ปุ่มเครื่องมือบนตาราง */
-        .tool-btn {
-            padding: 8px 16px; border: none; border-radius: 6px; font-family: 'Kanit';
-            font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.2s;
+        /* ปุ่มฝั่งจัดการข้อมูล */
+        .manage-btn {
+            padding: 8px 16px; font-size: 14px; border: none; border-radius: 6px;
+            font-family: 'Kanit'; font-weight: 600; cursor: pointer; transition: 0.3s; color: #fff;
         }
-        .tool-btn.export { background-color: var(--summer-blue); color: #000; }
-        .tool-btn.export:hover { box-shadow: 0 0 15px var(--summer-blue-glow); transform: translateY(-1px); }
-        .tool-btn.reset { background-color: transparent; border: 1px solid #ff4757; color: #ff4757; }
-        .tool-btn.reset:hover { background-color: rgba(255,71,87,0.1); transform: translateY(-1px); }
+        .btn-export { background-color: #2980b9; }
+        .btn-export:hover { background-color: #3498db; transform: translateY(-2px); }
+        .btn-reset { background-color: transparent; border: 1px solid #c0392b; color: #ff4757; }
+        .btn-reset:hover { background-color: #c0392b; color: #fff; transform: translateY(-2px); }
 
         /* รายชื่อสถานะ */
         .status-container { flex: 1; overflow-y: auto; padding-right: 15px; max-height: 60vh; }
@@ -161,7 +165,9 @@
         <!-- หน้า 1: ลงเวลา และ สถานะสด -->
         <div id="timePage" class="page active">
             <div class="card">
-                <h2>📝 ลงเวลาปฏิบัติงาน</h2>
+                <div class="header-title-container">
+                    <h2 style="margin:0; border:none; padding:0;">📝 ลงเวลาปฏิบัติงาน</h2>
+                </div>
                 <div class="form-group">
                     <label>ชื่อ - นามสกุล (ช่าง):</label>
                     <select id="mechanicName">
@@ -175,7 +181,9 @@
             </div>
 
             <div class="card">
-                <h2>🟢 สถานะการเข้าเวร</h2>
+                <div class="header-title-container">
+                    <h2 style="margin:0; border:none; padding:0; color:var(--summer-green);">🟢 สถานะการเข้าเวร</h2>
+                </div>
                 <div class="status-container" id="statusList">
                     <div style="color: #888; text-align: center; margin-top: 30px;">กำลังโหลดสถานะ...</div>
                 </div>
@@ -185,11 +193,11 @@
         <!-- หน้า 2: สรุปเวลาเข้าเวร -->
         <div id="summaryPage" class="page">
             <div class="card summary-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
-                    <h2 style="border: none; padding: 0; margin: 0;">📊 สรุปเวลาการทำงาน</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="tool-btn export" onclick="copySummaryText()">📋 คัดลอกส่งยอด</button>
-                        <button class="tool-btn reset" onclick="resetTimeLogs()">🗑️ รีเซ็ตรอบสัปดาห์</button>
+                <div class="header-title-container">
+                    <h2 style="margin:0; border:none; padding:0;">📊 สรุปเวลาการทำงาน</h2>
+                    <div style="display:flex; gap: 10px;">
+                        <button class="manage-btn btn-export" onclick="exportSummary()">📤 คัดลอกสรุปส่งงาน</button>
+                        <button class="manage-btn btn-reset" onclick="resetSummary()">🗑️ รีเซ็ตเวลา</button>
                     </div>
                 </div>
                 <table>
@@ -210,7 +218,7 @@
 
     <script>
         // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางที่นี่
-        const scriptURL = 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxspyLib46ypzOAOmV5vbaG3As5wcs4eln4_uGx-qQJxZlaDXSIqrVs10RsF1c1QrhWCw/exec';
 
         window.onload = loadData;
         setInterval(loadData, 30000);
@@ -226,7 +234,7 @@
         }
 
         function loadData() {
-            if (!scriptURL || scriptURL === 'https://script.google.com/macros/s/AKfycbxqvlIkrwIDdjjGND-C4nKQbxhiXlylvwVvIAQW5jvp-f9Wso4faqasiZFP9kj2chPv/exec') return;
+            if (!scriptURL || scriptURL === 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้') return;
 
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
@@ -292,48 +300,6 @@
             });
         }
 
-        // ระบบคัดลอกส่งยอดประจำสัปดาห์
-        function copySummaryText() {
-            if (latestData.length === 0) return alert('ไม่มีข้อมูลให้คัดลอกครับ');
-            
-            let text = "📊 สรุปเวลาเข้าเวรประจำสัปดาห์\n------------------------\n";
-            latestData.forEach(user => {
-                text += `👤 ${user.name}\n`;
-                text += `   - รายวัน: ${user.todayText}\n`;
-                text += `   - รายสัปดาห์: ${user.weekText}\n\n`;
-            });
-
-            navigator.clipboard.writeText(text).then(() => {
-                alert("📋 คัดลอกข้อมูลลงคลิปบอร์ดแล้ว! สามารถนำไปกดวาง (Ctrl+V) ในแชทได้เลยครับ");
-            }).catch(err => {
-                alert("❌ เกิดข้อผิดพลาดในการคัดลอก");
-            });
-        }
-
-        // ระบบรีเซ็ตรอบเวลา (ใส่คำสั่งยืนยันเพื่อกันพลาด)
-        function resetTimeLogs() {
-            const confirmWord = prompt("⚠️ คำเตือน: ประวัติการเข้าเวรทั้งหมดจะถูกลบทิ้งและเริ่มนับใหม่\n\nพิมพ์คำว่า 'reset' เพื่อยืนยันการล้างข้อมูล:");
-            
-            if (confirmWord !== "reset") {
-                if (confirmWord !== null) alert("❌ ยกเลิกการล้างข้อมูล (พิมพ์คำยืนยันไม่ถูกต้อง)");
-                return;
-            }
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'resetTime' })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert((data.status === 'success' ? '✅ ' : '⚠️ ') + data.msg);
-                if(data.status === 'success') loadData();
-            })
-            .catch(error => {
-                alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อ');
-                console.error('Error:', error);
-            });
-        }
-
         function recordTime(actionType) {
             const name = document.getElementById('mechanicName').value;
             if (!name) return alert('กรุณาเลือกชื่อก่อนบันทึกเวลา');
@@ -354,6 +320,52 @@
                 document.getElementById('btnIn').disabled = false;
                 document.getElementById('btnOut').disabled = false;
             });
+        }
+
+        // ฟังก์ชันคัดลอกสรุปเวลา
+        function exportSummary() {
+            if (latestData.length === 0) {
+                alert("ไม่มีข้อมูลให้คัดลอกครับ");
+                return;
+            }
+            
+            let textOutput = "📊 สรุปเวลาเข้าเวร\n\n";
+            latestData.forEach(user => {
+                textOutput += `ช่าง: ${user.name}\n`;
+                textOutput += `รวมเวลารายวัน: ${user.todayText}\n`;
+                textOutput += `รวมเวลารายสัปดาห์: ${user.weekText}\n`;
+                textOutput += `----------------------\n`;
+            });
+
+            navigator.clipboard.writeText(textOutput).then(() => {
+                alert("📋 คัดลอกข้อมูลสรุปเวลาเรียบร้อยแล้ว!\n(คุณสามารถนำไปกด Paste/วาง เพื่อส่งงานได้เลยครับ)");
+            }).catch(err => {
+                alert("❌ เกิดข้อผิดพลาดในการคัดลอก: " + err);
+            });
+        }
+
+        // ฟังก์ชันรีเซ็ตเวลาพร้อมรหัสผ่าน
+        function resetSummary() {
+            const password = prompt("⚠️ คำเตือน: ข้อมูลการเข้าออกเวรทั้งหมดในระบบจะถูกลบทิ้ง!\n\nกรุณาใส่รหัสผ่านเพื่อยืนยัน:");
+            
+            if (password === "Kapi0625") {
+                if (confirm("คุณแน่ใจจริงๆ ใช่ไหมว่าจะล้างข้อมูลทั้งหมด? (ไม่สามารถกู้คืนได้)")) {
+                    fetch(scriptURL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'resetData' })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.msg);
+                        loadData(); // รีเฟรชหน้าต่างใหม่ทันที
+                    })
+                    .catch(error => {
+                        alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อกับระบบ');
+                    });
+                }
+            } else if (password !== null) {
+                alert("❌ รหัสผ่านไม่ถูกต้อง! ยกเลิกการล้างข้อมูล");
+            }
         }
     </script>
 </body>
