@@ -224,7 +224,7 @@
 
     <script>
         // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางที่นี่
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwie9968jQCXNo1hZDTcuYvjrTpQMqCrwi11jhKT82yU8I4VO5bWK5App3iaFgfcLCN/exec';
+        const scriptURL = 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้';
 
         window.onload = loadData;
         setInterval(loadData, 30000);
@@ -264,7 +264,7 @@
         }
 
         function loadData() {
-            if (!scriptURL || scriptURL === 'https://script.google.com/macros/s/AKfycbwie9968jQCXNo1hZDTcuYvjrTpQMqCrwi11jhKT82yU8I4VO5bWK5App3iaFgfcLCN/exec') return;
+            if (!scriptURL || scriptURL === 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้') return;
 
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
