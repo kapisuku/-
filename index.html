@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summer City | ปล่อยเช่ารถ & ลงเวลาช่าง</title>
+    <title>ลงเวลาปฏิบัติงาน | Summer City</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root {
             --summer-orange: #FF5E3A;
@@ -57,294 +55,248 @@
             background: rgba(255, 94, 58, 0.1); border-color: var(--summer-orange); 
             color: var(--summer-orange); box-shadow: 0 0 15px var(--summer-orange-glow) inset;
         }
-        .tab-btn-duty {
-            border-color: #6c5ce7; color: #a29bfe;
-        }
-        .tab-btn-duty.active {
-            background: rgba(108, 92, 231, 0.1); border-color: #6c5ce7; 
-            color: #a29bfe; box-shadow: 0 0 15px rgba(108, 92, 231, 0.4) inset;
+
+        .container { 
+            max-width: 1400px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
         }
 
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .page { display: none; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .page.active { display: flex; gap: 30px; flex-wrap: wrap; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* โค้ดเดิมของระบบเช่ารถ */
-        .controls { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; background: rgba(22, 22, 28, 0.7); padding: 20px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 1px solid var(--border-color); align-items: center; backdrop-filter: blur(10px); }
-        .controls input[type="text"], .controls input[type="password"], .controls select { padding: 12px 18px; border-radius: 8px; border: 1px solid #333; font-family: 'Kanit'; flex: 1; min-width: 150px; background: #0F0F13; color: #fff; transition: all 0.3s ease; }
-        .view-filters { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
-        .view-btn { background: #2A2A35; color: #aaa; border: 1px solid #444; padding: 8px 16px; border-radius: 20px; font-family: 'Kanit'; cursor: pointer; font-size: 14px; transition: 0.3s; }
-        .view-btn.active { background: var(--summer-blue); color: #000; border-color: var(--summer-blue); font-weight: bold; }
-        .btn { border: none; padding: 12px 20px; border-radius: 8px; font-family: 'Kanit'; cursor: pointer; transition: all 0.3s ease; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .btn-add { background: linear-gradient(135deg, #00C9FF, #0082FF); color: white; box-shadow: 0 4px 15px var(--summer-blue-glow); }
-        .btn-rent { background: linear-gradient(135deg, #FF7E5F, #FF5E3A); color: #fff; box-shadow: 0 4px 15px var(--summer-orange-glow); } 
-        .car-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .car-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; border: 1px solid var(--border-color); position: relative; transition: all 0.3s ease; }
-        .car-image-container { position: relative; width: 100%; height: 180px; background: #000; }
-        .car-image { width: 100%; height: 100%; object-fit: cover; }
-        .car-details { padding: 20px; flex-grow: 1; }
-        .car-title { font-size: 20px; margin: 0 0 12px 0; display: flex; align-items: center; justify-content: space-between; font-weight: 800; color: #fff; text-transform: uppercase;}
-        .card-actions { display: flex; gap: 10px; padding: 15px 20px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid var(--border-color); }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px); }
-        .modal-content { background: #121216; padding: 35px; border-radius: 16px; width: 90%; max-width: 450px; border: 1px solid var(--summer-orange); color: white; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #aaa; font-size: 14px;}
-        .form-group input, .form-group select { width: 100%; padding: 12px 15px; border: 1px solid #333; border-radius: 8px; box-sizing: border-box; font-family: 'Kanit'; background: #0A0A0C; color: white; }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 30px; }
+        .card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-color);
+            flex: 1;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* CSS พิเศษสำหรับหน้าระบบลงเวลาช่าง */
-        .duty-wrapper { display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start; }
-        .duty-card { background: #222232; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid #333344; flex: 1; min-width: 350px; }
-        .duty-card h2 { margin-top: 0; font-size: 24px; border-bottom: 2px solid #333344; padding-bottom: 15px; margin-bottom: 25px; color: #fff; }
-        .btn-duty-in { flex: 1; padding: 15px; background: #00b894; color: white; border: none; border-radius: 10px; font-family: 'Kanit'; font-size: 18px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-duty-in:hover { background: #019e7f; transform: translateY(-2px); }
-        .btn-duty-out { flex: 1; padding: 15px; background: #d63031; color: white; border: none; border-radius: 10px; font-family: 'Kanit'; font-size: 18px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-duty-out:hover { background: #b82929; transform: translateY(-2px); }
-        .btn-duty-in:disabled, .btn-duty-out:disabled { filter: grayscale(1); cursor: not-allowed; transform: none; }
+        h2 {
+            margin-top: 0; font-size: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px; margin-bottom: 25px;
+            color: var(--summer-blue); font-weight: 800;
+        }
+
+        /* ฟอร์มลงเวลา */
+        .form-group { margin-bottom: 30px; }
+        label { display: block; margin-bottom: 12px; font-size: 16px; color: #aaa; }
+        select {
+            width: 100%; padding: 15px; background-color: #0F0F13;
+            border: 1px solid #333; border-radius: 8px; color: #fff;
+            font-family: 'Kanit'; font-size: 16px; outline: none; transition: 0.3s;
+        }
+        select:focus { border-color: var(--summer-orange); box-shadow: 0 0 10px var(--summer-orange-glow); }
+
+        .btn-group { display: flex; gap: 15px; }
+        button.action-btn {
+            flex: 1; padding: 15px; border: none; border-radius: 8px;
+            font-family: 'Kanit'; font-size: 18px; font-weight: 800;
+            color: white; cursor: pointer; transition: 0.3s; text-transform: uppercase;
+        }
+        .btn-in { background: linear-gradient(135deg, #00C9FF, #0082FF); box-shadow: 0 4px 15px var(--summer-blue-glow); }
+        .btn-in:hover { filter: brightness(1.15); transform: translateY(-2px); }
+        .btn-out { background: linear-gradient(135deg, #ff4757, #c0392b); box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); }
+        .btn-out:hover { filter: brightness(1.15); transform: translateY(-2px); }
+        button:disabled { filter: grayscale(1); cursor: not-allowed; transform: none; }
+
+        /* รายชื่อสถานะ */
+        .status-container { flex: 1; overflow-y: auto; padding-right: 15px; max-height: 60vh; }
+        .status-container::-webkit-scrollbar { width: 6px; }
+        .status-container::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+        .status-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 10px;
+        }
         
-        .duty-status-container { max-height: 500px; overflow-y: auto; padding-right: 10px; }
-        .duty-status-container::-webkit-scrollbar { width: 6px; }
-        .duty-status-container::-webkit-scrollbar-thumb { background: #4a4a6a; border-radius: 4px; }
-        .duty-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 10px; border-bottom: 1px solid #2a2a3e; }
-        .duty-item:last-child { border-bottom: none; }
-        .duty-info { display: flex; flex-direction: column; gap: 4px; }
-        .duty-name { font-size: 20px; font-weight: 800; color: #fff; }
-        .duty-stats { font-size: 14px; color: #a0a0b5; }
-        .duty-stats span { color: #fff; font-weight: 600; }
-        .duty-indicator { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; }
-        .duty-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .dot-on { background: #00e676; box-shadow: 0 0 10px rgba(0,230,118,0.6); }
-        .dot-off { background: #636e72; }
+        .user-name { font-size: 20px; font-weight: 600; color: #fff; }
+        .status-indicator { display: flex; align-items: center; gap: 12px; }
+        .status-text { font-size: 16px; font-weight: 600; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-online { background-color: var(--summer-green); box-shadow: 0 0 12px rgba(0, 230, 118, 0.7); }
+        .dot-offline { background-color: #444; }
+        .time-in { font-size: 16px; color: var(--summer-green); font-weight: 600; min-width: 50px; text-align: right; }
 
+        /* หน้าสรุปเวลา */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 16px; }
+        th { background: rgba(0,0,0,0.3); color: var(--summer-orange); font-weight: 800; text-transform: uppercase; }
+        td { color: #d0d0d0; }
+        .summary-card { width: 100%; flex: none; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1 onclick="switchPage('manage')" title="แอบเข้าหน้าจัดการ">
-        <span id="displaySiteTitle">🌴 SUMMER CITY</span> 
-        <span id="displaySiteSubtitle" style="font-size: 16px; font-weight: 400; color: #888; text-shadow: none;">| ปล่อยเช่ารถ</span>
-    </h1>
-    <div class="tab-menu">
-        <button class="tab-btn active" onclick="switchPage('cars')">🚗 ปล่อยเช่ารถ</button>
-        <button class="tab-btn" onclick="switchPage('dashboard')">📊 สรุปรายงาน</button>
-        <!-- ปุ่มใหม่สำหรับเปิดหน้าลงเวลาช่าง -->
-        <button class="tab-btn tab-btn-duty" onclick="switchPage('duty')">⚙️ ระบบลงเวลาช่าง</button>
-    </div>
-</header>
+    <header>
+        <h1>
+            <span style="color: var(--summer-orange);">🌴 SUMMER CITY</span> 
+            <span style="font-size: 16px; font-weight: 400; color: #888; text-shadow: none;">| ระบบลงเวลาช่าง</span>
+        </h1>
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="switchPage('time')">⏱️ ลงเวลา</button>
+            <button class="tab-btn" onclick="switchPage('summary')">📊 สรุปเวลาเข้าเวร</button>
+        </div>
+    </header>
 
-<div class="container">
-    <!-- หน้า 1: ปล่อยเช่า (โค้ดเดิมของคุณ) -->
-    <div id="carsPage" class="page active">
-        <div class="controls">
-            <input type="text" id="searchInput" placeholder="🔍 ค้นหารถ, ทะเบียน..." oninput="renderCars()">
-            <select id="categoryFilter" onchange="renderCars()"></select>
-        </div>
-        <div class="view-filters">
-            <button class="view-btn active" id="btnFilterAll" onclick="setOwnerFilter('all')">ดูรวมทั้งหมด</button>
-            <button class="view-btn" id="btnFilterKapi" onclick="setOwnerFilter('kapi')">ดูเฉพาะรถกะปื</button>
-            <button class="view-btn" id="btnFilterOwner" onclick="setOwnerFilter('owner')">ดูเฉพาะรถaxis</button>
-            <div style="border-left: 2px solid #333; height: 30px; margin: 0 10px;"></div>
-            <button class="view-btn active" id="btnFilterAvailableAll" onclick="setAvailableFilter('all')">ดูรถทั้งหมด</button>
-            <button class="view-btn" id="btnFilterAvailableOnly" onclick="setAvailableFilter('available')">เฉพาะรถว่าง 🟢</button>
-        </div>
-        <div class="car-grid" id="carGrid"></div>
-    </div>
-
-    <!-- หน้า 2: จัดการหลังบ้าน (ซ่อนไว้ให้สั้นลง แต่ระบบเดิมยังอยู่ครบถ้วน) -->
-    <div id="managePage" class="page">
-        <div id="loginScreen" style="background: rgba(22,22,28,0.8); padding: 50px 40px; border-radius: 16px; max-width: 400px; margin: 80px auto; text-align: center; border: 1px solid #333;">
-            <h2 style="color: var(--summer-orange);">🔒 SYSTEM LOGIN</h2>
-            <input type="text" id="adminUser" placeholder="Username" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #333; background:#000; color:#fff;">
-            <input type="password" id="adminPass" placeholder="Password" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #333; background:#000; color:#fff;">
-            <button class="btn btn-add" style="width:100%; padding: 15px;" onclick="checkLogin()">เข้าสู่ระบบ</button>
-        </div>
-        <div id="adminContent" style="display: none;">
-            <button class="btn btn-edit" style="background: transparent; color: #ff4757; border-color: #ff4757; margin-bottom: 20px;" onclick="logoutAdmin()">🚪 ออกจากระบบ</button>
-            <!-- (โค้ดฟอร์มเพิ่มรถต่างๆ ของคุณยังทำงานเหมือนเดิม) -->
-        </div>
-    </div>
-    
-    <!-- หน้า 3: สรุปผล -->
-    <div id="dashboardPage" class="page">
-        <div id="overallDashboardContainer"></div>
-    </div>
-
-    <!-- 🟢 หน้า 4 (ใหม่): ระบบลงเวลาช่าง -->
-    <div id="dutyPage" class="page">
-        <div class="duty-wrapper">
-            <!-- ฝั่งซ้าย: ลงเวลา -->
-            <div class="duty-card" style="flex: 0.6;">
-                <h2>ลงเวลาปฏิบัติงาน</h2>
+    <div class="container">
+        <!-- หน้า 1: ลงเวลา และ สถานะสด -->
+        <div id="timePage" class="page active">
+            <div class="card">
+                <h2>📝 ลงเวลาปฏิบัติงาน</h2>
                 <div class="form-group">
                     <label>ชื่อ - นามสกุล (ช่าง):</label>
-                    <select id="mechanicName" style="background: #161622; font-size: 16px;">
+                    <select id="mechanicName">
                         <option value="" disabled selected>กำลังโหลดข้อมูล...</option>
                     </select>
                 </div>
-                <div style="display: flex; gap: 15px; margin-top: 30px;">
-                    <button class="btn-duty-in" id="btnIn" onclick="recordDutyTime('เข้าเวร')">เข้าเวร</button>
-                    <button class="btn-duty-out" id="btnOut" onclick="recordDutyTime('ออกเวร')">ออกเวร</button>
+                <div class="btn-group">
+                    <button class="action-btn btn-in" id="btnIn" onclick="recordTime('เข้าเวร')">เข้าเวร</button>
+                    <button class="action-btn btn-out" id="btnOut" onclick="recordTime('ออกเวร')">ออกเวร</button>
                 </div>
             </div>
 
-            <!-- ฝั่งขวา: สถานะการเข้าเวร -->
-            <div class="duty-card" style="flex: 1.4;">
-                <h2>สถานะการเข้าเวร</h2>
-                <div class="duty-status-container" id="dutyStatusList">
-                    <div style="color: #888; text-align: center; margin-top: 30px;">กำลังเชื่อมต่อกับฐานข้อมูล...</div>
+            <div class="card">
+                <h2>🟢 สถานะการเข้าเวร</h2>
+                <div class="status-container" id="statusList">
+                    <div style="color: #888; text-align: center; margin-top: 30px;">กำลังโหลดสถานะ...</div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Modal ต่างๆ ของระบบเช่ารถ (ซ่อนไว้ให้สั้นลง) -->
-<div class="modal" id="rentModal">
-    <div class="modal-content">
-        <h2 style="color: var(--summer-orange); margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 15px;">📋 ลงทะเบียนสัญญาเช่ารถ</h2>
-        <input type="hidden" id="rentCarId">
-        <div class="form-group"><label>ยอดเงินที่รับมา</label><input type="text" id="rentPrice" oninput="formatNumber(this)"></div>
-        <div class="modal-actions">
-            <button class="btn" style="background: transparent; border: 1px solid #444; color:#888" onclick="closeModal('rentModal')">CANCEL</button>
-            <button class="btn btn-rent" onclick="confirmRent()">CONFIRM</button>
+        <!-- หน้า 2: สรุปเวลาเข้าเวร -->
+        <div id="summaryPage" class="page">
+            <div class="card summary-card">
+                <h2>📊 สรุปเวลาการทำงาน</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รายชื่อช่าง</th>
+                            <th>รวมเวลารายวัน</th>
+                            <th>รวมเวลารายสัปดาห์</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryTableBody">
+                        <tr><td colspan="3" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // ==========================================
-    // ⚙️ ส่วนของระบบ "ปล่อยเช่ารถ" (โค้ดเดิม)
-    // ==========================================
-    const carScriptURL = 'https://script.google.com/macros/s/AKfycbxVkgPyZ6nHMpqaa2s92YUpDhLxEybOduquKjNv-NJKuNQczQOmWjpFeLfFWi7aA5w-/exec';
-    
-    // ตั้งค่าตัวแปรเบื้องต้นจำลอง
-    let cars = JSON.parse(localStorage.getItem('summerCars')) || [];
-    let categories = ["ประมูล", "TOPDO", "ไฟฟ้า"];
-    let currentOwnerFilter = 'all'; 
-    let currentAvailableFilter = 'all';
+    <script>
+        // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางที่นี่
+        const scriptURL = 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้';
 
-    function switchPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId + 'Page').classList.add('active');
-        if (event && event.target) {
+        window.onload = loadData;
+        setInterval(loadData, 30000);
+
+        let latestData = [];
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(pageId + 'Page').classList.add('active');
             event.target.classList.add('active');
-        }
-        if(pageId === 'duty') {
-            loadDutyData(); // โหลดข้อมูลใหม่ทันทีที่กดเข้าหน้าช่าง
-        }
-    }
-
-    function formatNumber(input) {
-        let value = input.value.replace(/,/g, '').replace(/\D/g, '');
-        input.value = value ? parseInt(value).toLocaleString() : '';
-    }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-
-    // ==========================================
-    // 🔧 ส่วนของระบบ "ลงเวลาช่าง" (ใหม่ล่าสุด)
-    // ==========================================
-    
-    // 📌 ใส่ URL ของระบบลงเวลาช่างตรงนี้เลยครับ
-    const DUTY_SCRIPT_URL = 'ใส่_URL_ลงเวลาช่าง_อันใหม่_ที่นี่';
-    
-    let dutyInterval;
-
-    function loadDutyData() {
-        if (!DUTY_SCRIPT_URL || DUTY_SCRIPT_URL === 'ใส่_URL_ลงเวลาช่าง_อันใหม่_ที่นี่') {
-            document.getElementById('dutyStatusList').innerHTML = '<div style="color: #f39c12; text-align: center;">⚠️ กรุณาใส่ Web App URL ในโค้ดก่อนครับ</div>';
-            return;
+            if(pageId === 'summary') renderSummary();
         }
 
-        fetch(DUTY_SCRIPT_URL + '?action=getData')
-            .then(response => response.json())
-            .then(result => {
-                if(result.status === "error") {
-                    document.getElementById('dutyStatusList').innerHTML = `<div style="color: #d63031; text-align: center;">❌ ข้อผิดพลาดชีท:<br>${result.message}</div>`;
-                    return;
-                }
+        function loadData() {
+            if (!scriptURL || scriptURL === 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้') return;
 
-                const data = result.data;
-                const select = document.getElementById('mechanicName');
-                const statusList = document.getElementById('dutyStatusList');
-                const currentValue = select.value;
+            fetch(scriptURL + '?action=getData')
+                .then(response => response.json())
+                .then(result => {
+                    if(result.status === "error") return;
+                    
+                    latestData = result.data;
+                    const select = document.getElementById('mechanicName');
+                    const statusList = document.getElementById('statusList');
+                    const currentValue = select.value;
 
-                if (!data || data.length === 0) {
-                    statusList.innerHTML = '<div style="color: #f39c12; text-align: center;">⚠️ ไม่พบรายชื่อช่างในคอลัมน์ F (แถว 3 ลงไป)</div>';
-                    return;
-                }
+                    if (select.options.length <= 1) {
+                        select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
+                        latestData.forEach(user => {
+                            let option = document.createElement('option');
+                            option.value = user.name;
+                            option.textContent = user.name;
+                            select.appendChild(option);
+                        });
+                    }
 
-                if (select.options.length <= 1) {
-                    select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
-                    data.forEach(user => {
-                        let option = document.createElement('option');
-                        option.value = user.name;
-                        option.textContent = user.name;
-                        select.appendChild(option);
-                    });
-                }
-
-                statusList.innerHTML = '';
-                data.forEach(user => {
-                    let statusHtml = `
-                        <div class="duty-item">
-                            <div class="duty-info">
-                                <div class="duty-name">${user.name}</div>
-                                <div class="duty-stats">
-                                    รายวัน: <span>${user.todayText}</span> | รายสัปดาห์: <span>${user.weekText}</span>
+                    statusList.innerHTML = '';
+                    latestData.forEach(user => {
+                        let statusHtml = `
+                            <div class="status-item">
+                                <div class="user-name">${user.name}</div>
+                                <div class="status-indicator">
+                                    <span class="status-text" style="color: ${user.isOnline ? '#00e676' : '#636e72'}">
+                                        ${user.isOnline ? 'On Duty' : 'Off Duty'}
+                                    </span>
+                                    <div class="dot ${user.isOnline ? 'dot-online' : 'dot-offline'}"></div>
+                                    ${user.isOnline ? `<span class="time-in">${user.timeInText}</span>` : `<span class="time-in" style="opacity: 0">00:00</span>`}
                                 </div>
                             </div>
-                            <div class="duty-indicator">
-                                <span style="color: ${user.isOnline ? '#00e676' : '#636e72'}; font-weight: normal;">
-                                    ${user.isOnline ? 'On Duty' : 'Off Duty'}
-                                </span>
-                                <div class="duty-dot ${user.isOnline ? 'dot-on' : 'dot-off'}"></div>
-                            </div>
-                        </div>
-                    `;
-                    statusList.insertAdjacentHTML('beforeend', statusHtml);
-                });
+                        `;
+                        statusList.insertAdjacentHTML('beforeend', statusHtml);
+                    });
 
-                if(currentValue) select.value = currentValue;
-            })
-            .catch(error => {
-                document.getElementById('dutyStatusList').innerHTML = '<div style="color: #d63031; text-align: center;">❌ โหลดข้อมูลล้มเหลว ตรวจสอบ URL หรือสิทธิ์ Deploy</div>';
-            });
-    }
+                    if(currentValue) select.value = currentValue;
+                    if(document.getElementById('summaryPage').classList.contains('active')) renderSummary();
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
 
-    function recordDutyTime(actionType) {
-        const name = document.getElementById('mechanicName').value;
-        if (!name) return alert('กรุณาเลือกชื่อก่อนบันทึกเวลา');
-
-        document.getElementById('btnIn').disabled = true;
-        document.getElementById('btnOut').disabled = true;
-
-        fetch(DUTY_SCRIPT_URL, {
-            method: 'POST',
-            body: JSON.stringify({ name: name, action: actionType })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === 'success') {
-                alert('✅ ' + data.msg);
-                loadDutyData();
-            } else {
-                alert('⚠️ ' + data.msg); 
+        function renderSummary() {
+            const tbody = document.getElementById('summaryTableBody');
+            tbody.innerHTML = '';
+            
+            if (latestData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">ไม่มีข้อมูล</td></tr>';
+                return;
             }
-        })
-        .catch(error => alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อ'))
-        .finally(() => {
-            document.getElementById('btnIn').disabled = false;
-            document.getElementById('btnOut').disabled = false;
-        });
-    }
 
-    // โหลดข้อมูลช่างอัตโนมัติทุกๆ 30 วินาที
-    setInterval(loadDutyData, 30000);
+            latestData.forEach(user => {
+                let html = `
+                    <tr>
+                        <td style="font-weight:bold; color:#fff;">${user.name}</td>
+                        <td style="color: var(--summer-blue); font-weight: 600;">${user.todayText}</td>
+                        <td style="color: var(--summer-orange); font-weight: 600;">${user.weekText}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += html;
+            });
+        }
 
-</script>
+        function recordTime(actionType) {
+            const name = document.getElementById('mechanicName').value;
+            if (!name) return alert('กรุณาเลือกชื่อก่อนบันทึกเวลา');
+
+            document.getElementById('btnIn').disabled = true;
+            document.getElementById('btnOut').disabled = true;
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ name: name, action: actionType })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert((data.status === 'success' ? '✅ ' : '⚠️ ') + data.msg);
+                if(data.status === 'success') loadData();
+            })
+            .finally(() => {
+                document.getElementById('btnIn').disabled = false;
+                document.getElementById('btnOut').disabled = false;
+            });
+        }
+    </script>
 </body>
 </html>
