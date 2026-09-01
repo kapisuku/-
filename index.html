@@ -1,162 +1,73 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ลงเวลาปฏิบัติงาน</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Kanit', sans-serif;
-            background-color: #1a1a2e;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+function doGet(e) {
+  if (e.parameter.action === 'getData') {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var nameSheet = ss.getSheetByName("รายชื่อ");
+    var logSheet = ss.getSheetByName("เข้าออกเวร");
+    
+    // ดึงรายชื่อทั้งหมดจากชีท "รายชื่อ" คอลัมน์ B
+    var nameData = nameSheet.getRange(2, 2, nameSheet.getLastRow() - 1, 1).getValues();
+    var allNames = nameData.map(function(r) { return r[0]; }).filter(function(n) { return n !== ""; });
+    
+    // ดึงข้อมูลการลงเวลาเพื่อตรวจสอบสถานะ
+    var logData = [];
+    if (logSheet.getLastRow() > 1) {
+      logData = logSheet.getRange(2, 1, logSheet.getLastRow() - 1, 3).getValues();
+    }
+    
+    // สร้าง Object เก็บสถานะล่าสุดของทุกคน (เริ่มต้นให้เป็น false หรือออฟไลน์ทั้งหมด)
+    var statusMap = {};
+    allNames.forEach(function(n) { statusMap[n] = false; });
+    
+    // เช็คประวัติจากบนลงล่าง การกระทำล่าสุดจะเขียนทับสถานะเดิม
+    for (var i = 0; i < logData.length; i++) {
+      var n = logData[i][0]; // คอลัมน์ A (ชื่อ)
+      var timeIn = logData[i][1]; // คอลัมน์ B (เข้า)
+      var timeOut = logData[i][2]; // คอลัมน์ C (ออก)
+      
+      if (n && statusMap.hasOwnProperty(n)) {
+        if (timeIn !== "" && timeOut === "") {
+          statusMap[n] = true; // มีเวลาเข้า แต่ยังไม่มีเวลาออก = เข้าเวรอยู่ (จุดเขียว)
+        } else {
+          statusMap[n] = false; // ออกเวรแล้ว (จุดเทา)
         }
-        .card {
-            background-color: #222232;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid #333344;
-        }
-        h2 {
-            margin-top: 0;
-            font-size: 20px;
-            border-bottom: 1px solid #333344;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #b0b0c0;
-        }
-        select {
-            width: 100%;
-            padding: 12px;
-            background-color: #161622;
-            border: 1px solid #4a4a6a;
-            border-radius: 8px;
-            color: #fff;
-            font-family: 'Kanit', sans-serif;
-            font-size: 15px;
-            outline: none;
-            transition: 0.3s;
-            appearance: none;
-        }
-        select:focus {
-            border-color: #6c5ce7;
-            box-shadow: 0 0 10px rgba(108, 92, 231, 0.5);
-        }
-        .btn-group {
-            display: flex;
-            gap: 15px;
-        }
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Kanit', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .btn-in {
-            background-color: #00b894;
-            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
-        }
-        .btn-in:hover { background-color: #019e7f; }
-        .btn-out {
-            background-color: #d63031;
-            box-shadow: 0 4px 15px rgba(214, 48, 49, 0.3);
-        }
-        .btn-out:hover { background-color: #b82929; }
-    </style>
-</head>
-<body>
+      }
+    }
+    
+    // จัดเตรียมข้อมูลส่งกลับให้หน้าเว็บ
+    var result = allNames.map(function(n) {
+      return { name: n, isOnline: statusMap[n] };
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({data: result}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
 
-    <div class="card">
-        <h2>ลงเวลาปฏิบัติงาน</h2>
-        
-        <div class="form-group">
-            <label>ชื่อ - นามสกุล (ช่าง):</label>
-            <select id="mechanicName">
-                <option value="" disabled selected>กำลังโหลดรายชื่อ...</option>
-            </select>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn-in" onclick="recordTime('เข้าเวร')">เข้าเวร</button>
-            <button class="btn-out" onclick="recordTime('ออกเวร')">ออกเวร</button>
-        </div>
-    </div>
-
-    <script>
-        // อัปเดต URL เป็นของคุณเรียบร้อยแล้ว
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzdgWj-zf4U47o9hHrC_bDw7AMdZFjdLH6ny0j3YsfAHnF3aBEgFJ9M5Wyeoh09Ru44gw/exec';
-
-        window.onload = function() {
-            fetch(scriptURL + '?action=getNames')
-                .then(response => response.json())
-                .then(data => {
-                    const select = document.getElementById('mechanicName');
-                    select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
-                    data.names.forEach(name => {
-                        let option = document.createElement('option');
-                        option.value = name;
-                        option.textContent = name;
-                        select.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error loading names:', error));
-        };
-
-        function recordTime(actionType) {
-            const name = document.getElementById('mechanicName').value;
-            
-            if (!name) {
-                alert('กรุณาเลือกชื่อก่อนบันทึกเวลา');
-                return;
-            }
-
-            document.querySelector('.btn-in').disabled = true;
-            document.querySelector('.btn-out').disabled = true;
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify({ name: name, action: actionType })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.status === 'success') {
-                    alert('✅ ' + data.msg);
-                    document.getElementById('mechanicName').value = ""; 
-                } else {
-                    alert('⚠️ ' + data.msg); 
-                }
-            })
-            .catch(error => {
-                alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อกับระบบ');
-                console.error('Error:', error);
-            })
-            .finally(() => {
-                document.querySelector('.btn-in').disabled = false;
-                document.querySelector('.btn-out').disabled = false;
-            });
-        }
-    </script>
-</body>
-</html>
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("เข้าออกเวร");
+  var data = JSON.parse(e.postData.contents);
+  var name = data.name;
+  var action = data.action;
+  var timestamp = new Date();
+  
+  if (action === 'เข้าเวร') {
+    var lastRow = sheet.getLastRow();
+    sheet.getRange(lastRow + 1, 1).setValue(name);
+    sheet.getRange(lastRow + 1, 2).setValue(timestamp);
+    
+    return ContentService.createTextOutput(JSON.stringify({status: "success", msg: "บันทึกเข้าเวรสำเร็จ!"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } 
+  else if (action === 'ออกเวร') {
+    var dataRange = sheet.getRange(1, 1, sheet.getLastRow(), 3).getValues();
+    for (var i = dataRange.length - 1; i >= 1; i--) {
+      if (dataRange[i][0] === name && dataRange[i][1] !== "" && dataRange[i][2] === "") {
+        sheet.getRange(i + 1, 3).setValue(timestamp);
+        return ContentService.createTextOutput(JSON.stringify({status: "success", msg: "บันทึกออกเวรสำเร็จ!"}))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({status: "error", msg: "ไม่พบประวัติการเข้าเวรที่ค้างอยู่ หรือกดออกเวรไปแล้ว"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
