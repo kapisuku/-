@@ -12,58 +12,62 @@
             color: #fff;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: stretch; /* ให้ขยายเต็มความสูง */
             height: 100vh;
             margin: 0;
+            padding: 30px;
+            box-sizing: border-box;
         }
 
-        /* กล่องหลัก แบ่งซ้าย-ขวา */
+        /* ขยายกล่องหลักให้ใหญ่เต็มจอ */
         .container {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            width: 90%;
-            max-width: 850px;
+            gap: 40px;
+            width: 100%;
+            max-width: 1600px;
         }
 
         .card {
             background-color: #222232;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             border: 1px solid #333344;
             flex: 1;
-            min-width: 300px;
+            min-width: 450px;
+            display: flex;
+            flex-direction: column;
         }
 
         h2 {
             margin-top: 0;
-            font-size: 20px;
-            border-bottom: 1px solid #333344;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            font-size: 28px;
+            border-bottom: 2px solid #333344;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
             color: #fff;
         }
 
         /* ฟอร์มด้านซ้าย */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 12px;
+            font-size: 18px;
             color: #b0b0c0;
         }
         select {
             width: 100%;
-            padding: 12px;
+            padding: 18px;
             background-color: #161622;
             border: 1px solid #4a4a6a;
-            border-radius: 8px;
+            border-radius: 12px;
             color: #fff;
             font-family: 'Kanit', sans-serif;
-            font-size: 15px;
+            font-size: 18px;
             outline: none;
             transition: 0.3s;
             appearance: none;
@@ -71,69 +75,93 @@
         }
         select:focus {
             border-color: #6c5ce7;
-            box-shadow: 0 0 10px rgba(108, 92, 231, 0.5);
+            box-shadow: 0 0 15px rgba(108, 92, 231, 0.5);
         }
 
         .btn-group {
             display: flex;
-            gap: 15px;
+            gap: 20px;
         }
         button {
             flex: 1;
-            padding: 12px;
+            padding: 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-family: 'Kanit', sans-serif;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 600;
             color: white;
             cursor: pointer;
             transition: 0.3s;
         }
         .btn-in { background-color: #00b894; box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3); }
-        .btn-in:hover { background-color: #019e7f; transform: translateY(-2px); }
+        .btn-in:hover { background-color: #019e7f; transform: translateY(-3px); }
         .btn-out { background-color: #d63031; box-shadow: 0 4px 15px rgba(214, 48, 49, 0.3); }
-        .btn-out:hover { background-color: #b82929; transform: translateY(-2px); }
+        .btn-out:hover { background-color: #b82929; transform: translateY(-3px); }
         button:disabled { filter: grayscale(1); cursor: not-allowed; transform: none; }
 
         /* รายชื่อสถานะด้านขวา */
         .status-container {
-            max-height: 250px;
+            flex: 1; /* ขยายความสูงที่เหลือให้เต็ม */
             overflow-y: auto;
-            padding-right: 10px;
+            padding-right: 15px;
         }
-        /* แต่ง Scrollbar */
-        .status-container::-webkit-scrollbar { width: 6px; }
-        .status-container::-webkit-scrollbar-thumb { background: #4a4a6a; border-radius: 4px; }
+        .status-container::-webkit-scrollbar { width: 8px; }
+        .status-container::-webkit-scrollbar-thumb { background: #4a4a6a; border-radius: 6px; }
 
         .status-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 10px;
+            padding: 20px 15px;
             border-bottom: 1px solid #2a2a3e;
-            font-size: 15px;
-            color: #eaeaea;
         }
         .status-item:last-child { border-bottom: none; }
         
-        .status-dot-wrapper {
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .user-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .user-stats {
+            font-size: 15px;
+            color: #a0a0b5;
+        }
+        .user-stats span {
+            color: #e0e0e0;
+        }
+        
+        .status-indicator {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
+            gap: 12px;
+        }
+        .status-text {
+            font-size: 18px;
         }
         .dot {
-            width: 10px;
-            height: 10px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
         }
         .dot-online {
             background-color: #00e676;
-            box-shadow: 0 0 10px rgba(0, 230, 118, 0.6);
+            box-shadow: 0 0 12px rgba(0, 230, 118, 0.7);
         }
         .dot-offline {
             background-color: #636e72;
+        }
+        .time-in {
+            font-size: 18px;
+            color: #00e676;
+            font-weight: 600;
+            min-width: 55px; /* ล็อคความกว้างให้ตรงกัน */
+            text-align: right;
         }
 
     </style>
@@ -160,17 +188,19 @@
         <div class="card">
             <h2>สถานะการเข้าเวร</h2>
             <div class="status-container" id="statusList">
-                <div style="color: #888; text-align: center; margin-top: 20px;">กำลังโหลดสถานะ...</div>
+                <div style="color: #888; text-align: center; margin-top: 30px; font-size: 18px;">กำลังโหลดสถานะ...</div>
             </div>
         </div>
     </div>
 
     <script>
-        // อัปเดต Web App URL ใหม่ของคุณที่นี่
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyHQ_jiKXG_7-4FFKWTvvs2O1kx8s0vAdreIWZSQop8vln7quCTxkjsv5AlZL8tXz8cdA/exec';
+        // ใช้ Web App URL ที่เพิ่งอัปเดต
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwvh7rKrDBDYVjeN5QSSC49_qMIhiUE_NkfZGv_0w7ANYH3gbLTm8QxH3uayYawr_ru/exec';
 
-        // โหลดข้อมูลเมื่อเปิดเว็บ
         window.onload = loadData;
+
+        // อัปเดตข้อมูลอัตโนมัติทุกๆ 30 วินาที
+        setInterval(loadData, 30000);
 
         function loadData() {
             fetch(scriptURL + '?action=getData')
@@ -182,23 +212,34 @@
                     
                     const currentValue = select.value;
 
-                    select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
+                    // ป้องกันการรีเฟรช Dropdown ถ้ามีคนกำลังกดเลือกชื่ออยู่
+                    if (select.options.length <= 1) {
+                        select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
+                        data.forEach(user => {
+                            let option = document.createElement('option');
+                            option.value = user.name;
+                            option.textContent = user.name;
+                            select.appendChild(option);
+                        });
+                    }
+
+                    // สร้าง UI สถานะ
                     statusList.innerHTML = '';
-
                     data.forEach(user => {
-                        // เพิ่มรายชื่อใน Dropdown
-                        let option = document.createElement('option');
-                        option.value = user.name;
-                        option.textContent = user.name;
-                        select.appendChild(option);
-
-                        // สร้างรายการโชว์สถานะด้านขวา
                         let statusHtml = `
                             <div class="status-item">
-                                <span>${user.name}</span>
-                                <div class="status-dot-wrapper">
-                                    <span style="color: ${user.isOnline ? '#00e676' : '#636e72'}">${user.isOnline ? 'On Duty' : 'Off Duty'}</span>
+                                <div class="user-info">
+                                    <div class="user-name">${user.name}</div>
+                                    <div class="user-stats">
+                                        รายวัน: <span>${user.todayText}</span> | รายสัปดาห์: <span>${user.weekText}</span>
+                                    </div>
+                                </div>
+                                <div class="status-indicator">
+                                    <span class="status-text" style="color: ${user.isOnline ? '#00e676' : '#636e72'}">
+                                        ${user.isOnline ? 'เข้าเวรอยู่' : 'ออกเวรอยู่'}
+                                    </span>
                                     <div class="dot ${user.isOnline ? 'dot-online' : 'dot-offline'}"></div>
+                                    ${user.isOnline ? `<span class="time-in">${user.timeInText}</span>` : `<span class="time-in" style="opacity: 0">00:00</span>`}
                                 </div>
                             </div>
                         `;
@@ -207,10 +248,7 @@
 
                     if(currentValue) select.value = currentValue;
                 })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    document.getElementById('statusList').innerHTML = '<div style="color: #d63031; text-align: center;">โหลดข้อมูลล้มเหลว</div>';
-                });
+                .catch(error => console.error('Error fetching data:', error));
         }
 
         function recordTime(actionType) {
