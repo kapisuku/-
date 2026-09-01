@@ -191,15 +191,18 @@
     </div>
 
     <script>
-        // 📌 Web App URL อันใหม่ของคุณ
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzXYGdNm10hyeEnUw9amCW7-w82KHigk_MKbYH1VJrYyREAju2Si9g4JWcqg7L1yaoCQw/exec';
+        // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางในเครื่องหมายคำพูดด้านล่างนี้ได้เลยครับ
+        const scriptURL = 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้';
 
+        // โหลดข้อมูลเมื่อเปิดเว็บ
         window.onload = loadData;
+
+        // อัปเดตข้อมูลอัตโนมัติทุกๆ 30 วินาที
         setInterval(loadData, 30000);
 
         function loadData() {
-            if (!scriptURL || scriptURL === 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้') {
-                document.getElementById('statusList').innerHTML = '<div style="color: #f39c12; text-align: center; margin-top: 30px;">⚠️ กรุณาใส่ Web App URL ในโค้ด HTML ก่อนครับ</div>';
+            if (!scriptURL || scriptURL === 'https://script.google.com/macros/s/AKfycbxOZJOyRP3YouENK7u8GZ6MhIBJwBiqtm1vxozxJe6_kC6l8t4YOfJEzSGIQD5pKyLptA/exec') {
+                document.getElementById('statusList').innerHTML = '<div style="color: #f39c12; text-align: center; margin-top: 30px;">⚠️ กรุณาใส่ Web App URL ในโค้ดก่อนครับ</div>';
                 return;
             }
 
@@ -212,12 +215,13 @@
                     
                     const currentValue = select.value;
 
-                    // แจ้งเตือนถ้าหาชื่อในชีทไม่เจอเลย (เผื่อชีทมีการเปลี่ยนแปลงคอลัมน์)
+                    // แจ้งเตือนชัดเจนถ้าชีทรายชื่อว่างเปล่า
                     if (!data || data.length === 0) {
-                        statusList.innerHTML = '<div style="color: #f39c12; text-align: center; margin-top: 30px;">⚠️ ไม่พบรายชื่อช่าง<br><span style="font-size: 14px; color: #888;">(โปรดตรวจสอบว่ามีรายชื่ออยู่ใน "คอลัมน์ B" ของชีท "รายชื่อ" หรือไม่)</span></div>';
+                        statusList.innerHTML = '<div style="color: #f39c12; text-align: center; margin-top: 30px; line-height: 1.6;">⚠️ เชื่อมต่อสำเร็จ แต่ไม่พบรายชื่อช่าง!<br><span style="font-size: 15px; color: #aaa;">โปรดตรวจสอบว่าได้ใส่ชื่อช่างไว้ในชีท "รายชื่อ" แล้วหรือไม่</span></div>';
                         return;
                     }
 
+                    // ป้องกันการรีเฟรช Dropdown ถ้ามีคนกำลังกดเลือกชื่ออยู่
                     if (select.options.length <= 1) {
                         select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
                         data.forEach(user => {
@@ -228,6 +232,7 @@
                         });
                     }
 
+                    // สร้าง UI สถานะ
                     statusList.innerHTML = '';
                     data.forEach(user => {
                         let statusHtml = `
@@ -254,7 +259,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
-                    document.getElementById('statusList').innerHTML = '<div style="color: #d63031; text-align: center; margin-top: 30px;">❌ โหลดข้อมูลล้มเหลว<br><span style="font-size: 14px; color: #888;">(โปรดเช็คว่ากด Deploy เป็น "New deployment" และตั้งสิทธิ์เป็น "ทุกคน" แล้วหรือยัง)</span></div>';
+                    document.getElementById('statusList').innerHTML = '<div style="color: #d63031; text-align: center; margin-top: 30px; line-height: 1.6;">❌ โหลดข้อมูลล้มเหลว<br><span style="font-size: 15px; color: #aaa;">โปรดเช็คการ Deploy ว่าเป็น "New deployment" และตั้งสิทธิ์เป็น "ทุกคน" หรือไม่</span></div>';
                 });
         }
 
