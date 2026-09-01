@@ -107,6 +107,16 @@
         .btn-out:hover { filter: brightness(1.15); transform: translateY(-2px); }
         button:disabled { filter: grayscale(1); cursor: not-allowed; transform: none; }
 
+        /* ปุ่มเครื่องมือบนตาราง */
+        .tool-btn {
+            padding: 8px 16px; border: none; border-radius: 6px; font-family: 'Kanit';
+            font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.2s;
+        }
+        .tool-btn.export { background-color: var(--summer-blue); color: #000; }
+        .tool-btn.export:hover { box-shadow: 0 0 15px var(--summer-blue-glow); transform: translateY(-1px); }
+        .tool-btn.reset { background-color: transparent; border: 1px solid #ff4757; color: #ff4757; }
+        .tool-btn.reset:hover { background-color: rgba(255,71,87,0.1); transform: translateY(-1px); }
+
         /* รายชื่อสถานะ */
         .status-container { flex: 1; overflow-y: auto; padding-right: 15px; max-height: 60vh; }
         .status-container::-webkit-scrollbar { width: 6px; }
@@ -175,7 +185,13 @@
         <!-- หน้า 2: สรุปเวลาเข้าเวร -->
         <div id="summaryPage" class="page">
             <div class="card summary-card">
-                <h2>📊 สรุปเวลาการทำงาน</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+                    <h2 style="border: none; padding: 0; margin: 0;">📊 สรุปเวลาการทำงาน</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="tool-btn export" onclick="copySummaryText()">📋 คัดลอกส่งยอด</button>
+                        <button class="tool-btn reset" onclick="resetTimeLogs()">🗑️ รีเซ็ตรอบสัปดาห์</button>
+                    </div>
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -194,7 +210,7 @@
 
     <script>
         // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางที่นี่
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzXNuM-eo9eU8CqlKgTjnLB6j_0BD0HEgykMCNjfkYGdTHCMV5mD9JSuBBXGJjI7-Ae8g/exec';
+        const scriptURL = 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้';
 
         window.onload = loadData;
         setInterval(loadData, 30000);
@@ -210,7 +226,7 @@
         }
 
         function loadData() {
-            if (!scriptURL || scriptURL === 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้') return;
+            if (!scriptURL || scriptURL === 'https://script.google.com/macros/s/AKfycbxqvlIkrwIDdjjGND-C4nKQbxhiXlylvwVvIAQW5jvp-f9Wso4faqasiZFP9kj2chPv/exec') return;
 
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
@@ -273,6 +289,48 @@
                     </tr>
                 `;
                 tbody.innerHTML += html;
+            });
+        }
+
+        // ระบบคัดลอกส่งยอดประจำสัปดาห์
+        function copySummaryText() {
+            if (latestData.length === 0) return alert('ไม่มีข้อมูลให้คัดลอกครับ');
+            
+            let text = "📊 สรุปเวลาเข้าเวรประจำสัปดาห์\n------------------------\n";
+            latestData.forEach(user => {
+                text += `👤 ${user.name}\n`;
+                text += `   - รายวัน: ${user.todayText}\n`;
+                text += `   - รายสัปดาห์: ${user.weekText}\n\n`;
+            });
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("📋 คัดลอกข้อมูลลงคลิปบอร์ดแล้ว! สามารถนำไปกดวาง (Ctrl+V) ในแชทได้เลยครับ");
+            }).catch(err => {
+                alert("❌ เกิดข้อผิดพลาดในการคัดลอก");
+            });
+        }
+
+        // ระบบรีเซ็ตรอบเวลา (ใส่คำสั่งยืนยันเพื่อกันพลาด)
+        function resetTimeLogs() {
+            const confirmWord = prompt("⚠️ คำเตือน: ประวัติการเข้าเวรทั้งหมดจะถูกลบทิ้งและเริ่มนับใหม่\n\nพิมพ์คำว่า 'reset' เพื่อยืนยันการล้างข้อมูล:");
+            
+            if (confirmWord !== "reset") {
+                if (confirmWord !== null) alert("❌ ยกเลิกการล้างข้อมูล (พิมพ์คำยืนยันไม่ถูกต้อง)");
+                return;
+            }
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'resetTime' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert((data.status === 'success' ? '✅ ' : '⚠️ ') + data.msg);
+                if(data.status === 'success') loadData();
+            })
+            .catch(error => {
+                alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                console.error('Error:', error);
             });
         }
 
