@@ -33,7 +33,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             border: 1px solid #333344;
             flex: 1;
-            min-width: 300px; /* ย่อหน้าจอแล้วไม่เพี้ยน */
+            min-width: 300px;
         }
 
         h2 {
@@ -166,8 +166,8 @@
     </div>
 
     <script>
-        // อัปเดต Web App URL ใหม่
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxWZGvM5a9-ZZ8aM3gj4ryb5yewRxrWyB4AbXSyjkvDunO6F_NF_Z7ZDWkYagISRO4zzw/exec';
+        // อัปเดต Web App URL ใหม่ของคุณที่นี่
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyHQ_jiKXG_7-4FFKWTvvs2O1kx8s0vAdreIWZSQop8vln7quCTxkjsv5AlZL8tXz8cdA/exec';
 
         // โหลดข้อมูลเมื่อเปิดเว็บ
         window.onload = loadData;
@@ -180,21 +180,19 @@
                     const select = document.getElementById('mechanicName');
                     const statusList = document.getElementById('statusList');
                     
-                    // เก็บค่าที่เคยเลือกไว้ จะได้ไม่ต้องกดเลือกใหม่ตอนข้อมูลรีเฟรช
                     const currentValue = select.value;
 
-                    // เคลียร์ข้อมูลเก่า
                     select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
                     statusList.innerHTML = '';
 
                     data.forEach(user => {
-                        // 1. เพิ่มรายชื่อใน Dropdown
+                        // เพิ่มรายชื่อใน Dropdown
                         let option = document.createElement('option');
                         option.value = user.name;
                         option.textContent = user.name;
                         select.appendChild(option);
 
-                        // 2. สร้างรายการโชว์สถานะด้านขวา
+                        // สร้างรายการโชว์สถานะด้านขวา
                         let statusHtml = `
                             <div class="status-item">
                                 <span>${user.name}</span>
@@ -207,7 +205,6 @@
                         statusList.insertAdjacentHTML('beforeend', statusHtml);
                     });
 
-                    // เซ็ตค่า Dropdown กลับเป็นคนที่เลือกไว้ล่าสุด
                     if(currentValue) select.value = currentValue;
                 })
                 .catch(error => {
@@ -224,7 +221,6 @@
                 return;
             }
 
-            // ล็อคปุ่ม
             document.getElementById('btnIn').disabled = true;
             document.getElementById('btnOut').disabled = true;
 
@@ -236,7 +232,7 @@
             .then(data => {
                 if(data.status === 'success') {
                     alert('✅ ' + data.msg);
-                    loadData(); // ดึงข้อมูลมารีเฟรชสถานะจุดเขียว-เทา ทันที
+                    loadData();
                 } else {
                     alert('⚠️ ' + data.msg); 
                 }
@@ -246,7 +242,6 @@
                 console.error('Error:', error);
             })
             .finally(() => {
-                // ปลดล็อคปุ่ม
                 document.getElementById('btnIn').disabled = false;
                 document.getElementById('btnOut').disabled = false;
             });
