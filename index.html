@@ -12,14 +12,13 @@
             color: #fff;
             display: flex;
             justify-content: center;
-            align-items: stretch; /* ให้ขยายเต็มความสูง */
+            align-items: stretch; 
             height: 100vh;
             margin: 0;
             padding: 30px;
             box-sizing: border-box;
         }
 
-        /* ขยายกล่องหลักให้ใหญ่เต็มจอ */
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -49,7 +48,6 @@
             color: #fff;
         }
 
-        /* ฟอร์มด้านซ้าย */
         .form-group {
             margin-bottom: 30px;
         }
@@ -100,9 +98,8 @@
         .btn-out:hover { background-color: #b82929; transform: translateY(-3px); }
         button:disabled { filter: grayscale(1); cursor: not-allowed; transform: none; }
 
-        /* รายชื่อสถานะด้านขวา */
         .status-container {
-            flex: 1; /* ขยายความสูงที่เหลือให้เต็ม */
+            flex: 1; 
             overflow-y: auto;
             padding-right: 15px;
         }
@@ -160,7 +157,7 @@
             font-size: 18px;
             color: #00e676;
             font-weight: 600;
-            min-width: 55px; /* ล็อคความกว้างให้ตรงกัน */
+            min-width: 55px; 
             text-align: right;
         }
 
@@ -194,15 +191,21 @@
     </div>
 
     <script>
-        // ใช้ Web App URL ที่เพิ่งอัปเดต
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwvh7rKrDBDYVjeN5QSSC49_qMIhiUE_NkfZGv_0w7ANYH3gbLTm8QxH3uayYawr_ru/exec';
+        // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางในเครื่องหมายคำพูดด้านล่างนี้ได้เลยครับ
+        const scriptURL = 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้';
 
+        // โหลดข้อมูลเมื่อเปิดเว็บ
         window.onload = loadData;
 
         // อัปเดตข้อมูลอัตโนมัติทุกๆ 30 วินาที
         setInterval(loadData, 30000);
 
         function loadData() {
+            if (scriptURL === 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้') {
+                document.getElementById('statusList').innerHTML = '<div style="color: #f39c12; text-align: center; margin-top: 30px;">⚠️ กรุณาใส่ Web App URL ในโค้ดก่อนครับ</div>';
+                return;
+            }
+
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
                 .then(result => {
@@ -248,7 +251,10 @@
 
                     if(currentValue) select.value = currentValue;
                 })
-                .catch(error => console.error('Error fetching data:', error));
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('statusList').innerHTML = '<div style="color: #d63031; text-align: center; margin-top: 30px;">❌ โหลดข้อมูลล้มเหลว (เช็ค URL หรือสิทธิ์การเข้าถึง)</div>';
+                });
         }
 
         function recordTime(actionType) {
