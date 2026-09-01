@@ -1,330 +1,162 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบเข้า-ออกเวรช่าง FiveM</title>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Kanit', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-
-    /* หัวข้อตรงกลาง */
-    .header {
-      text-align: center;
-      margin: 20px 0 40px;
-    }
-
-    .header h1 {
-      font-size: 2.8rem;
-      font-weight: 600;
-      background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
-    }
-
-    .header p {
-      color: #94a3b8;
-      font-size: 1.1rem;
-      margin-top: 5px;
-    }
-
-    /* กล่องหลักแบ่ง 2 ฝั่ง */
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      width: 100%;
-      max-width: 1100px;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    }
-
-    .card-title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      color: #f8fafc;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 10px;
-    }
-
-    /* ฝั่งซ้าย: ฟอร์ม */
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #cbd5e1;
-    }
-
-    select, input {
-      width: 100%;
-      padding: 14px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      color: #fff;
-      font-size: 1rem;
-      outline: none;
-      transition: 0.3s;
-    }
-
-    select:focus, input:focus {
-      border-color: #818cf8;
-      box-shadow: 0 0 10px rgba(129, 140, 248, 0.5);
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 15px;
-      margin-top: 10px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-in {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-    }
-
-    .btn-in:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
-    }
-
-    .btn-out {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-    }
-
-    .btn-out:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
-    }
-
-    /* ฝั่งขวา: รายชื่อช่าง */
-    .mechanic-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-height: 400px;
-      overflow-y: auto;
-      padding-right: 5px;
-    }
-
-    .mechanic-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(15, 23, 42, 0.4);
-      padding: 12px 18px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .mechanic-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .status-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-    }
-
-    .dot-green {
-      background-color: #10b981;
-      box-shadow: 0 0 10px #10b981;
-    }
-
-    .dot-grey {
-      background-color: #64748b;
-    }
-
-    .mechanic-name {
-      font-size: 1.05rem;
-      font-weight: 400;
-    }
-
-    .mechanic-time {
-      font-size: 0.9rem;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.1);
-      padding: 4px 10px;
-      border-radius: 20px;
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ลงเวลาปฏิบัติงาน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #1a1a2e;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background-color: #222232;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #333344;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 20px;
+            border-bottom: 1px solid #333344;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #b0b0c0;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            background-color: #161622;
+            border: 1px solid #4a4a6a;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Kanit', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+            appearance: none;
+        }
+        select:focus {
+            border-color: #6c5ce7;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.5);
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-in {
+            background-color: #00b894;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+        }
+        .btn-in:hover { background-color: #019e7f; }
+        .btn-out {
+            background-color: #d63031;
+            box-shadow: 0 4px 15px rgba(214, 48, 49, 0.3);
+        }
+        .btn-out:hover { background-color: #b82929; }
+    </style>
 </head>
 <body>
 
-  <!-- หัวข้อกลางจอ -->
-  <div class="header">
-    <h1>เข้า - ออกเวรช่าง</h1>
-    <p>ระบบจัดการเวลาปฏิบัติงานช่าง FiveM</p>
-  </div>
-
-  <div class="container">
-    <!-- ด้านซ้าย: เลือกระบุชื่อ และกดเข้า/ออกเวร -->
     <div class="card">
-      <div class="card-title">ลงเวลาปฏิบัติงาน</div>
-      <form id="dutyForm">
+        <h2>ลงเวลาปฏิบัติงาน</h2>
+        
         <div class="form-group">
-          <label for="mechanicName">ชื่อ - นามสกุล (ช่าง):</label>
-          <input type="text" id="mechanicName" placeholder="ระบุชื่อช่าง..." required>
+            <label>ชื่อ - นามสกุล (ช่าง):</label>
+            <select id="mechanicName">
+                <option value="" disabled selected>กำลังโหลดรายชื่อ...</option>
+            </select>
         </div>
 
         <div class="btn-group">
-          <button type="button" class="btn btn-in" onclick="submitDuty('in')">เข้าเวร</button>
-          <button type="button" class="btn btn-out" onclick="submitDuty('out')">ออกเวร</button>
+            <button class="btn-in" onclick="recordTime('เข้าเวร')">เข้าเวร</button>
+            <button class="btn-out" onclick="recordTime('ออกเวร')">ออกเวร</button>
         </div>
-      </form>
     </div>
 
-    <!-- ด้านขวา: แสดงรายชื่อช่างและสถานะ -->
-    <div class="card">
-      <div class="card-title">สถานะช่างประจำการ</div>
-      <div class="mechanic-list" id="mechanicList">
-        <div style="text-align: center; color: #94a3b8;">กำลังโหลดข้อมูล...</div>
-      </div>
-    </div>
-  </div>
+    <script>
+        // อัปเดต URL เป็นของคุณเรียบร้อยแล้ว
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzdgWj-zf4U47o9hHrC_bDw7AMdZFjdLH6ny0j3YsfAHnF3aBEgFJ9M5Wyeoh09Ru44gw/exec';
 
-  <script>
-    // URL Web App จาก Google Apps Script
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEfV3p0oPg2xsONKLsG4IQr1EiqfX-vORvyc6oAy5_NAPxXE2FzHzEQKW2uf-hfEyzjg/exec";
+        window.onload = function() {
+            fetch(scriptURL + '?action=getNames')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('mechanicName');
+                    select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
+                    data.names.forEach(name => {
+                        let option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = name;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading names:', error));
+        };
 
-    // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
-    window.onload = () => {
-      fetchData();
-      // อัปเดตข้อมูลอัตโนมัติทุกๆ 10 วินาที
-      setInterval(fetchData, 10000);
-    };
+        function recordTime(actionType) {
+            const name = document.getElementById('mechanicName').value;
+            
+            if (!name) {
+                alert('กรุณาเลือกชื่อก่อนบันทึกเวลา');
+                return;
+            }
 
-    // ดึงข้อมูลจาก Google Sheets
-    function fetchData() {
-      fetch(SCRIPT_URL)
-        .then(res => res.json())
-        .then(data => {
-          renderList(data);
-        })
-        .catch(err => {
-          console.error("Error fetching data:", err);
-        });
-    }
+            document.querySelector('.btn-in').disabled = true;
+            document.querySelector('.btn-out').disabled = true;
 
-    // แสดงผลรายชื่อช่างฝั่งขวา
-    function renderList(list) {
-      const listContainer = document.getElementById("mechanicList");
-      listContainer.innerHTML = "";
-
-      if (!list || list.length === 0) {
-        listContainer.innerHTML = `<div style="text-align: center; color: #94a3b8;">ยังไม่มีข้อมูลช่าง</div>`;
-        return;
-      }
-
-      list.forEach(item => {
-        const isOnDuty = item.status === 'on';
-        const itemEl = document.createElement("div");
-        itemEl.className = "mechanic-item";
-
-        itemEl.innerHTML = `
-          <div class="mechanic-info">
-            <span class="status-dot ${isOnDuty ? 'dot-green' : 'dot-grey'}"></span>
-            <span class="mechanic-name">${item.name}</span>
-          </div>
-          ${isOnDuty && item.time ? `<div class="mechanic-time">เข้าเวร ${item.time} น.</div>` : ''}
-        `;
-
-        listContainer.appendChild(itemEl);
-      });
-    }
-
-    // ส่งข้อมูลเข้า หรือ ออกเวร
-    function submitDuty(action) {
-      const nameInput = document.getElementById("mechanicName");
-      const name = nameInput.value.trim();
-
-      if (!name) {
-        alert("กรุณาระบุชื่อช่างก่อนกดทำรายการ");
-        return;
-      }
-
-      const payload = {
-        name: name,
-        action: action
-      };
-
-      // ส่งข้อมูลไปยัง Google Apps Script
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors", // สำหรับ Google Apps Script cross-origin
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(() => {
-        alert(action === 'in' ? `เข้าเวรสำเร็จ: ${name}` : `ออกเวรสำเร็จ: ${name}`);
-        nameInput.value = "";
-        setTimeout(fetchData, 1000); // โหลดข้อมูลใหม่หลังจากบันทึก 1 วินาที
-      })
-      .catch(err => {
-        alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-        console.error(err);
-      });
-    }
-  </script>
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ name: name, action: actionType })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    alert('✅ ' + data.msg);
+                    document.getElementById('mechanicName').value = ""; 
+                } else {
+                    alert('⚠️ ' + data.msg); 
+                }
+            })
+            .catch(error => {
+                alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อกับระบบ');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                document.querySelector('.btn-in').disabled = false;
+                document.querySelector('.btn-out').disabled = false;
+            });
+        }
+    </script>
 </body>
 </html>
