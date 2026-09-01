@@ -106,10 +106,16 @@
             color: white; cursor: pointer; transition: 0.3s; text-transform: uppercase;
         }
         .btn-in { background: linear-gradient(135deg, #00C9FF, #0082FF); box-shadow: 0 4px 15px var(--summer-blue-glow); }
-        .btn-in:hover { filter: brightness(1.15); transform: translateY(-2px); }
+        .btn-in:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-2px); }
         .btn-out { background: linear-gradient(135deg, #ff4757, #c0392b); box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); }
-        .btn-out:hover { filter: brightness(1.15); transform: translateY(-2px); }
-        button:disabled { filter: grayscale(1); cursor: not-allowed; transform: none; }
+        .btn-out:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-2px); }
+        button:disabled { 
+            background: #2a2a3e !important; 
+            color: #666; 
+            box-shadow: none !important; 
+            cursor: not-allowed; 
+            transform: none !important; 
+        }
 
         /* ปุ่มฝั่งจัดการข้อมูล */
         .manage-btn {
@@ -170,7 +176,7 @@
                 </div>
                 <div class="form-group">
                     <label>ชื่อ - นามสกุล (ช่าง):</label>
-                    <select id="mechanicName">
+                    <select id="mechanicName" onchange="updateButtonState()">
                         <option value="" disabled selected>กำลังโหลดข้อมูล...</option>
                     </select>
                 </div>
@@ -218,7 +224,7 @@
 
     <script>
         // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางที่นี่
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyb6BKKxczrwvCFXn3951Mz4WMJpl-555zH91DAWjRHk_ouuaWenTrsFc9reJ-yhrMlVA/exec';
+        const scriptURL = 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้';
 
         window.onload = loadData;
         setInterval(loadData, 30000);
@@ -233,8 +239,32 @@
             if(pageId === 'summary') renderSummary();
         }
 
+        // ดักจับสถานะให้ปุ่มเป็นสีเทา กดไม่ได้
+        function updateButtonState() {
+            const name = document.getElementById('mechanicName').value;
+            const btnIn = document.getElementById('btnIn');
+            const btnOut = document.getElementById('btnOut');
+
+            if (!name) {
+                btnIn.disabled = false;
+                btnOut.disabled = false;
+                return;
+            }
+
+            const user = latestData.find(u => u.name === name);
+            if (user) {
+                if (user.isOnline) {
+                    btnIn.disabled = true;  // เข้าอยู่ = เข้าซ้ำไม่ได้
+                    btnOut.disabled = false; 
+                } else {
+                    btnIn.disabled = false;
+                    btnOut.disabled = true; // ออกอยู่ = ออกซ้ำไม่ได้
+                }
+            }
+        }
+
         function loadData() {
-            if (!scriptURL || scriptURL === 'ใส่_URL_อันใหม่ล่าสุด_ตรงนี้') return;
+            if (!scriptURL || scriptURL === 'https://script.google.com/macros/s/AKfycbwJDaWW9m_03-UKEXX38yWLT2u0xP9oeaQZrx0DGCocA7vbw-X8WyIhA182HO97XxtiEg/exec') return;
 
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
@@ -273,7 +303,10 @@
                         statusList.insertAdjacentHTML('beforeend', statusHtml);
                     });
 
-                    if(currentValue) select.value = currentValue;
+                    if(currentValue) {
+                        select.value = currentValue;
+                        updateButtonState(); // อัปเดตปุ่มทันทีที่โหลดข้อมูลเสร็จ
+                    }
                     if(document.getElementById('summaryPage').classList.contains('active')) renderSummary();
                 })
                 .catch(error => console.error('Error fetching data:', error));
@@ -314,15 +347,14 @@
             .then(response => response.json())
             .then(data => {
                 alert((data.status === 'success' ? '✅ ' : '⚠️ ') + data.msg);
-                if(data.status === 'success') loadData();
-            })
-            .finally(() => {
-                document.getElementById('btnIn').disabled = false;
-                document.getElementById('btnOut').disabled = false;
+                if(data.status === 'success') {
+                    loadData();
+                } else {
+                    updateButtonState(); // คืนค่าปุ่มกลับมาถ้าเกิด error ฝั่งเซิร์ฟเวอร์
+                }
             });
         }
 
-        // ฟังก์ชันคัดลอกสรุปเวลา
         function exportSummary() {
             if (latestData.length === 0) {
                 alert("ไม่มีข้อมูลให้คัดลอกครับ");
@@ -344,7 +376,6 @@
             });
         }
 
-        // ฟังก์ชันรีเซ็ตเวลาพร้อมรหัสผ่าน
         function resetSummary() {
             const password = prompt("⚠️ คำเตือน: ข้อมูลการเข้าออกเวรทั้งหมดในระบบจะถูกลบทิ้ง!\n\nกรุณาใส่รหัสผ่านเพื่อยืนยัน:");
             
@@ -357,7 +388,7 @@
                     .then(response => response.json())
                     .then(data => {
                         alert(data.msg);
-                        loadData(); // รีเฟรชหน้าต่างใหม่ทันที
+                        loadData(); 
                     })
                     .catch(error => {
                         alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อกับระบบ');
