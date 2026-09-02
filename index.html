@@ -140,7 +140,7 @@
                 <div class="form-group">
                     <label>ชื่อ - นามสกุล (ช่าง):</label>
                     <select id="mechanicName" onchange="updateButtonState()">
-                        <option value="" disabled selected>กำลังโหลดข้อมูล...</option>
+                        <option value="" disabled selected>เลือกชื่อของคุณ...</option>
                     </select>
                 </div>
                 <div class="btn-group">
@@ -187,14 +187,28 @@
 
     <script>
         // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางที่นี่
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxB_NUh81HV0xtOYpQMyoUiNQoUzywa9ByAyOdzH8D4n2ht-RmHGfKY570lBeYxqT8zKA/exec';
+        const scriptURL = 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่';
+
+        // 🌟 ฝังรายชื่อเริ่มต้นไว้เลย! ใครเปิดเข้ามาครั้งแรกก็จะเห็นชื่อทันที 100% ไม่ต้องรอเน็ต
+        const defaultNames = [
+            "Kapi Suku", "Tith Nova", "Miwa Lazin", "Thongyod Camero", 
+            "Dan Rmm", "Shuichi Allen", "Momo Taro", "Nhong Triplex", 
+            "Taeow Newgate", "Anos Volgos", "Eres Chatora", "Tmax Monomax"
+        ];
 
         let latestData = [];
 
         window.onload = () => {
-            loadCachedNames(); // โหลดชื่อจากความจำเครื่องขึ้นมาโชว์ทันที
-            loadData(); // ดึงข้อมูลอัปเดตจาก Google แบบเบื้องหลัง
+            // โหลดรายชื่อที่ฝังไว้ขึ้นมาแสดงที่ Dropdown แบบทันที 0 วินาที
+            populateDropdown(defaultNames); 
+            
+            // ลองเช็คความจำเครื่องเผื่อมีช่างคนใหม่เพิ่มเข้ามา
+            loadCachedNames(); 
+            
+            // ไปดึงสถานะ On/Off Duty จาก Google (แอบโหลดอยู่เบื้องหลัง จะไม่ทำให้หน้าเว็บค้าง)
+            loadData(); 
         };
+        
         setInterval(loadData, 30000);
 
         function switchPage(pageId) {
@@ -209,7 +223,10 @@
             const cached = localStorage.getItem('summerCityNames');
             if (cached) {
                 const names = JSON.parse(cached);
-                populateDropdown(names);
+                // ถ้าในความจำเครื่องมีชื่อมากกว่าที่ฝังไว้ ให้โหลดอันใหม่
+                if(names.length > defaultNames.length) {
+                    populateDropdown(names);
+                }
             }
         }
 
@@ -217,10 +234,10 @@
             const select = document.getElementById('mechanicName');
             const currentValue = select.value;
             
-            // ป้องกันจอกระพริบถ้าชื่อมีครบอยู่แล้ว
+            // ป้องกันรายชื่อกระพริบเวลาโหลดใหม่
             if (select.options.length > 1 && select.options.length === names.length + 1) return;
 
-            select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
+            select.innerHTML = '<option value="" disabled selected>เลือกชื่อของคุณ...</option>';
             names.forEach(name => {
                 let option = document.createElement('option');
                 option.value = name;
@@ -256,7 +273,7 @@
         }
 
         function loadData() {
-            if (!scriptURL || scriptURL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') return;
+            if (!scriptURL || scriptURL === 'https://script.google.com/macros/s/AKfycbxJmnp2oqsJMSvjvvz2k6zpl43yO4jk-tRZGcqbSxDHztSQQ9XdFbqAlH5p8Boov4hBGw/exec') return;
 
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
@@ -266,7 +283,7 @@
                     latestData = result.data;
                     const nameList = latestData.map(u => u.name);
                     
-                    // อัปเดต Cache เพื่อให้เปิดเว็บรอบหน้าเร็วขึ้น
+                    // บันทึกชื่อใหม่ๆ ลงเครื่อง (ถ้ามีการเพิ่มช่างใหม่ใน Google Sheet ระบบจะดึงมาเติมให้เอง)
                     localStorage.setItem('summerCityNames', JSON.stringify(nameList)); 
                     populateDropdown(nameList); 
 
@@ -299,7 +316,7 @@
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = '';
             if (latestData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">ไม่มีข้อมูล</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">กำลังประมวลผลข้อมูล...</td></tr>';
                 return;
             }
             latestData.forEach(user => {
@@ -334,7 +351,7 @@
         }
 
         function exportSummary() {
-            if (latestData.length === 0) return alert("ไม่มีข้อมูลให้คัดลอกครับ");
+            if (latestData.length === 0) return alert("ข้อมูลยังโหลดไม่เสร็จ หรือไม่มีข้อมูลให้คัดลอกครับ");
             let textOutput = "📊 สรุปเวลาเข้าเวร\n\n";
             latestData.forEach(user => {
                 textOutput += `ช่าง: ${user.name}\nรวมเวลารายวัน: ${user.todayText}\nรวมเวลารายสัปดาห์: ${user.weekText}\n----------------------\n`;
