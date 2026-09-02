@@ -7,44 +7,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --summer-orange: #FF5E3A;
-            --summer-orange-glow: rgba(255, 94, 58, 0.4);
-            --summer-blue: #00D2FF;
-            --summer-blue-glow: rgba(0, 210, 255, 0.4);
-            --summer-green: #00E676;
-            --card-bg: #16161C; 
-            --bg-dark: #0B0B0E; 
-            --text-light: #EAEAEA;
-            --border-color: #262630;
+            --summer-orange: #FF5E3A; --summer-orange-glow: rgba(255, 94, 58, 0.4);
+            --summer-blue: #00D2FF; --summer-blue-glow: rgba(0, 210, 255, 0.4);
+            --summer-green: #00E676; --card-bg: #16161C; 
+            --bg-dark: #0B0B0E; --text-light: #EAEAEA; --border-color: #262630;
         }
         body {
-            font-family: 'Kanit', sans-serif;
-            margin: 0; padding: 0;
-            background: var(--bg-dark);
-            min-height: 100vh;
-            color: var(--text-light);
+            font-family: 'Kanit', sans-serif; margin: 0; padding: 0;
+            background: var(--bg-dark); min-height: 100vh; color: var(--text-light);
             background-image: radial-gradient(circle at 50% 0%, #1a1a24 0%, transparent 70%);
         }
         header {
-            background: rgba(11, 11, 14, 0.85);
-            backdrop-filter: blur(12px);
-            padding: 15px 30px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
-            position: sticky; top: 0; z-index: 100;
+            background: rgba(11, 11, 14, 0.85); backdrop-filter: blur(12px);
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8); position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid var(--border-color);
         }
         header h1 {
             margin: 0; color: #fff; font-size: 24px; font-weight: 800;
             display: flex; align-items: center; gap: 10px;
-            text-shadow: 0 0 15px var(--summer-orange-glow);
-            letter-spacing: 1px; cursor: pointer; user-select: none;
+            text-shadow: 0 0 15px var(--summer-orange-glow); cursor: pointer; user-select: none;
         }
         .tab-menu { display: flex; gap: 12px; }
         .tab-btn {
             background: transparent; color: #888; border: 1px solid transparent;
             padding: 8px 20px; border-radius: 8px; font-family: 'Kanit'; 
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s;
         }
         .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
         .tab-btn.active {
@@ -84,7 +72,7 @@
         .btn-out { background: linear-gradient(135deg, #ff4757, #c0392b); box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); }
         .btn-out:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-2px); }
         button:disabled { 
-            background: #2a2a3e !important; color: #666; box-shadow: none !important; 
+            background: #2a2a3e !important; color: #666 !important; box-shadow: none !important; 
             cursor: not-allowed; transform: none !important; 
         }
         .manage-btn {
@@ -154,7 +142,7 @@
                     <h2 style="margin:0; border:none; padding:0; color:var(--summer-green);">🟢 สถานะการเข้าเวร</h2>
                 </div>
                 <div class="status-container" id="statusList">
-                    <div style="color: #888; text-align: center; margin-top: 30px;">กำลังอัปเดตสถานะล่าสุด...</div>
+                    <div style="color: #888; text-align: center; margin-top: 30px;">กำลังโหลดข้อมูลจากเซิร์ฟเวอร์...</div>
                 </div>
             </div>
         </div>
@@ -178,7 +166,7 @@
                         </tr>
                     </thead>
                     <tbody id="summaryTableBody">
-                        <tr><td colspan="3" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>
+                        <tr><td colspan="3" style="text-align:center;">กำลังประมวลผลข้อมูล...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -186,10 +174,9 @@
     </div>
 
     <script>
-        // 📌 นำ Web App URL อันใหม่ล่าสุดมาวางที่นี่
-        const scriptURL = 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่';
+        // 📌 ใส่ Web App URL ตรงนี้
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyQymnLNCsnUIqmeg2sAmw3cZG6KmYYGijJZJw4400ZRvDcs8shydCmJVN8MrLai9VAdg/exec';
 
-        // 🌟 ฝังรายชื่อเริ่มต้นไว้เลย! ใครเปิดเข้ามาครั้งแรกก็จะเห็นชื่อทันที 100% ไม่ต้องรอเน็ต
         const defaultNames = [
             "Kapi Suku", "Tith Nova", "Miwa Lazin", "Thongyod Camero", 
             "Dan Rmm", "Shuichi Allen", "Momo Taro", "Nhong Triplex", 
@@ -199,13 +186,8 @@
         let latestData = [];
 
         window.onload = () => {
-            // โหลดรายชื่อที่ฝังไว้ขึ้นมาแสดงที่ Dropdown แบบทันที 0 วินาที
             populateDropdown(defaultNames); 
-            
-            // ลองเช็คความจำเครื่องเผื่อมีช่างคนใหม่เพิ่มเข้ามา
             loadCachedNames(); 
-            
-            // ไปดึงสถานะ On/Off Duty จาก Google (แอบโหลดอยู่เบื้องหลัง จะไม่ทำให้หน้าเว็บค้าง)
             loadData(); 
         };
         
@@ -223,18 +205,13 @@
             const cached = localStorage.getItem('summerCityNames');
             if (cached) {
                 const names = JSON.parse(cached);
-                // ถ้าในความจำเครื่องมีชื่อมากกว่าที่ฝังไว้ ให้โหลดอันใหม่
-                if(names.length > defaultNames.length) {
-                    populateDropdown(names);
-                }
+                if(names.length > defaultNames.length) populateDropdown(names);
             }
         }
 
         function populateDropdown(names) {
             const select = document.getElementById('mechanicName');
             const currentValue = select.value;
-            
-            // ป้องกันรายชื่อกระพริบเวลาโหลดใหม่
             if (select.options.length > 1 && select.options.length === names.length + 1) return;
 
             select.innerHTML = '<option value="" disabled selected>เลือกชื่อของคุณ...</option>';
@@ -256,6 +233,9 @@
             const btnIn = document.getElementById('btnIn');
             const btnOut = document.getElementById('btnOut');
 
+            btnIn.innerText = "เข้าเวร";
+            btnOut.innerText = "ออกเวร";
+
             if (!name) {
                 btnIn.disabled = false; btnOut.disabled = false; return;
             }
@@ -269,25 +249,25 @@
                     btnIn.disabled = false;
                     btnOut.disabled = true; 
                 }
+            } else {
+                btnIn.disabled = false; btnOut.disabled = true;
             }
         }
 
         function loadData() {
-            if (!scriptURL || scriptURL === 'https://script.google.com/macros/s/AKfycbxJmnp2oqsJMSvjvvz2k6zpl43yO4jk-tRZGcqbSxDHztSQQ9XdFbqAlH5p8Boov4hBGw/exec') return;
+            if (!scriptURL || scriptURL.includes('ใส่_URL')) return;
 
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
                 .then(result => {
-                    if(result.status === "error") return;
+                    if(result.status === "error") throw new Error(result.message);
                     
                     latestData = result.data;
                     const nameList = latestData.map(u => u.name);
                     
-                    // บันทึกชื่อใหม่ๆ ลงเครื่อง (ถ้ามีการเพิ่มช่างใหม่ใน Google Sheet ระบบจะดึงมาเติมให้เอง)
                     localStorage.setItem('summerCityNames', JSON.stringify(nameList)); 
                     populateDropdown(nameList); 
 
-                    // อัปเดตสถานะ On Duty / Off Duty
                     const statusList = document.getElementById('statusList');
                     statusList.innerHTML = '';
                     latestData.forEach(user => {
@@ -309,14 +289,19 @@
                     updateButtonState();
                     if(document.getElementById('summaryPage').classList.contains('active')) renderSummary();
                 })
-                .catch(error => console.error('Error fetching data:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    if(latestData.length === 0) {
+                        document.getElementById('statusList').innerHTML = '<div style="color: #ff4757; text-align: center; margin-top: 30px;">⚠️ โหลดข้อมูลล้มเหลว กรุณารีเฟรชหน้าเว็บ</div>';
+                    }
+                });
         }
 
         function renderSummary() {
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = '';
             if (latestData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">กำลังประมวลผลข้อมูล...</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">ยังไม่มีข้อมูลในระบบ</td></tr>';
                 return;
             }
             latestData.forEach(user => {
@@ -335,8 +320,15 @@
             const name = document.getElementById('mechanicName').value;
             if (!name) return alert('กรุณาเลือกชื่อก่อนบันทึกเวลา');
 
-            document.getElementById('btnIn').disabled = true;
-            document.getElementById('btnOut').disabled = true;
+            const btnIn = document.getElementById('btnIn');
+            const btnOut = document.getElementById('btnOut');
+
+            // เปลี่ยนข้อความปุ่มและล็อคปุ่มกันกดซ้ำ
+            if(actionType === 'เข้าเวร') btnIn.innerText = "⏳ กำลังบันทึก...";
+            if(actionType === 'ออกเวร') btnOut.innerText = "⏳ กำลังบันทึก...";
+            
+            btnIn.disabled = true;
+            btnOut.disabled = true;
 
             fetch(scriptURL, {
                 method: 'POST',
@@ -347,6 +339,11 @@
                 alert((data.status === 'success' ? '✅ ' : '⚠️ ') + data.msg);
                 if(data.status === 'success') loadData();
                 else updateButtonState();
+            })
+            .catch(error => {
+                // ถ้าเน็ตหลุด หรือ เซิร์ฟเวอร์ตาย ปุ่มจะเด้งกลับมาให้ใช้งานได้อีกครั้ง
+                alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองกดใหม่อีกครั้ง');
+                updateButtonState();
             });
         }
 
