@@ -7,52 +7,85 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --summer-orange: #FF5E3A; --summer-orange-glow: rgba(255, 94, 58, 0.4);
-            --summer-blue: #00D2FF; --summer-blue-glow: rgba(0, 210, 255, 0.4);
-            --summer-green: #00E676; --card-bg: #16161C; 
-            --bg-dark: #0B0B0E; --text-light: #EAEAEA; --border-color: #262630;
+            --summer-orange: #FF5E3A;
+            --summer-orange-glow: rgba(255, 94, 58, 0.4);
+            --summer-blue: #00D2FF;
+            --summer-blue-glow: rgba(0, 210, 255, 0.4);
+            --summer-green: #00E676;
+            --card-bg: #16161C; 
+            --bg-dark: #0B0B0E; 
+            --text-light: #EAEAEA;
+            --border-color: #262630;
         }
+
         body {
-            font-family: 'Kanit', sans-serif; margin: 0; padding: 0;
-            background: var(--bg-dark); min-height: 100vh; color: var(--text-light);
+            font-family: 'Kanit', sans-serif;
+            margin: 0; padding: 0;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            color: var(--text-light);
             background-image: radial-gradient(circle at 50% 0%, #1a1a24 0%, transparent 70%);
         }
+
         header {
-            background: rgba(11, 11, 14, 0.85); backdrop-filter: blur(12px);
-            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8); position: sticky; top: 0; z-index: 100;
+            background: rgba(11, 11, 14, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 15px 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+            position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid var(--border-color);
         }
+
         header h1 {
             margin: 0; color: #fff; font-size: 24px; font-weight: 800;
             display: flex; align-items: center; gap: 10px;
-            text-shadow: 0 0 15px var(--summer-orange-glow); cursor: pointer; user-select: none;
+            text-shadow: 0 0 15px var(--summer-orange-glow);
+            letter-spacing: 1px; cursor: pointer; user-select: none;
         }
+
         .tab-menu { display: flex; gap: 12px; }
         .tab-btn {
             background: transparent; color: #888; border: 1px solid transparent;
             padding: 8px 20px; border-radius: 8px; font-family: 'Kanit'; 
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s;
+            font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
         }
         .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
         .tab-btn.active {
             background: rgba(255, 94, 58, 0.1); border-color: var(--summer-orange); 
             color: var(--summer-orange); box-shadow: 0 0 15px var(--summer-orange-glow) inset;
         }
-        .container { max-width: 1400px; margin: 40px auto; padding: 0 20px; }
+
+        .container { 
+            max-width: 1400px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+        }
+
         .page { display: none; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .page.active { display: flex; gap: 30px; flex-wrap: wrap; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
         .card {
-            background-color: var(--card-bg); padding: 40px; border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); border: 1px solid var(--border-color);
-            flex: 1; min-width: 400px; display: flex; flex-direction: column;
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-color);
+            flex: 1;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
         }
+
         h2 { margin-top: 0; font-size: 24px; color: var(--summer-blue); font-weight: 800; }
+
         .header-title-container {
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px; margin-bottom: 25px;
         }
+
         .form-group { margin-bottom: 30px; }
         label { display: block; margin-bottom: 12px; font-size: 16px; color: #aaa; }
         select {
@@ -61,6 +94,7 @@
             font-family: 'Kanit'; font-size: 16px; outline: none; transition: 0.3s;
         }
         select:focus { border-color: var(--summer-orange); box-shadow: 0 0 10px var(--summer-orange-glow); }
+
         .btn-group { display: flex; gap: 15px; }
         button.action-btn {
             flex: 1; padding: 15px; border: none; border-radius: 8px;
@@ -72,9 +106,10 @@
         .btn-out { background: linear-gradient(135deg, #ff4757, #c0392b); box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); }
         .btn-out:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-2px); }
         button:disabled { 
-            background: #2a2a3e !important; color: #666 !important; box-shadow: none !important; 
+            background: #2a2a3e !important; color: #666; box-shadow: none !important; 
             cursor: not-allowed; transform: none !important; 
         }
+
         .manage-btn {
             padding: 8px 16px; font-size: 14px; border: none; border-radius: 6px;
             font-family: 'Kanit'; font-weight: 600; cursor: pointer; transition: 0.3s; color: #fff;
@@ -83,14 +118,17 @@
         .btn-export:hover { background-color: #3498db; transform: translateY(-2px); }
         .btn-reset { background-color: transparent; border: 1px solid #c0392b; color: #ff4757; }
         .btn-reset:hover { background-color: #c0392b; color: #fff; transform: translateY(-2px); }
+
         .status-container { flex: 1; overflow-y: auto; padding-right: 15px; max-height: 60vh; }
         .status-container::-webkit-scrollbar { width: 6px; }
         .status-container::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
         .status-item {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px; border-bottom: 1px solid var(--border-color);
             background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 10px;
         }
+        
         .user-name { font-size: 20px; font-weight: 600; color: #fff; }
         .status-indicator { display: flex; align-items: center; gap: 12px; }
         .status-text { font-size: 16px; font-weight: 600; }
@@ -98,6 +136,9 @@
         .dot-online { background-color: var(--summer-green); box-shadow: 0 0 12px rgba(0, 230, 118, 0.7); }
         .dot-offline { background-color: #444; }
         .time-in { font-size: 16px; color: var(--summer-green); font-weight: 600; min-width: 50px; text-align: right; }
+        
+        .loading-text { font-size: 14px; color: #888; margin-left: 10px; display: none; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 16px; }
         th { background: rgba(0,0,0,0.3); color: var(--summer-orange); font-weight: 800; text-transform: uppercase; }
@@ -111,6 +152,7 @@
         <h1>
             <span style="color: var(--summer-orange);">🌴 SUMMER CITY</span> 
             <span style="font-size: 16px; font-weight: 400; color: #888; text-shadow: none;">| ระบบลงเวลาช่าง</span>
+            <span id="loadingIndicator" class="loading-text">กำลังซิงค์...</span>
         </h1>
         <div class="tab-menu">
             <button class="tab-btn active" onclick="switchPage('time')">⏱️ ลงเวลา</button>
@@ -119,7 +161,7 @@
     </header>
 
     <div class="container">
-        <!-- หน้า 1: ลงเวลา -->
+        <!-- หน้า 1: ลงเวลา และ สถานะสด -->
         <div id="timePage" class="page active">
             <div class="card">
                 <div class="header-title-container">
@@ -128,7 +170,7 @@
                 <div class="form-group">
                     <label>ชื่อ - นามสกุล (ช่าง):</label>
                     <select id="mechanicName" onchange="updateButtonState()">
-                        <option value="" disabled selected>เลือกชื่อของคุณ...</option>
+                        <option value="" disabled selected>กรุณารอโหลดรายชื่อสักครู่...</option>
                     </select>
                 </div>
                 <div class="btn-group">
@@ -142,12 +184,12 @@
                     <h2 style="margin:0; border:none; padding:0; color:var(--summer-green);">🟢 สถานะการเข้าเวร</h2>
                 </div>
                 <div class="status-container" id="statusList">
-                    <div style="color: #888; text-align: center; margin-top: 30px;">กำลังโหลดข้อมูลจากเซิร์ฟเวอร์...</div>
+                    <div style="color: #888; text-align: center; margin-top: 30px;">กำลังโหลดสถานะ...</div>
                 </div>
             </div>
         </div>
 
-        <!-- หน้า 2: สรุปเวลา -->
+        <!-- หน้า 2: สรุปเวลาเข้าเวร -->
         <div id="summaryPage" class="page">
             <div class="card summary-card">
                 <div class="header-title-container">
@@ -166,7 +208,7 @@
                         </tr>
                     </thead>
                     <tbody id="summaryTableBody">
-                        <tr><td colspan="3" style="text-align:center;">กำลังประมวลผลข้อมูล...</td></tr>
+                        <tr><td colspan="3" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -174,24 +216,19 @@
     </div>
 
     <script>
-        // 📌 ใส่ Web App URL ตรงนี้
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyQymnLNCsnUIqmeg2sAmw3cZG6KmYYGijJZJw4400ZRvDcs8shydCmJVN8MrLai9VAdg/exec';
+        // 📌 Web App URL อันใหม่ล่าสุด
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwGxWYMtX0JTFOLD6zD6iCN8XtGP55n_wvHWdaXUqk87p1f9jRyP7xpmv6V73yj3cz9uA/exec';
 
-        const defaultNames = [
-            "Kapi Suku", "Tith Nova", "Miwa Lazin", "Thongyod Camero", 
-            "Dan Rmm", "Shuichi Allen", "Momo Taro", "Nhong Triplex", 
-            "Taeow Newgate", "Anos Volgos", "Eres Chatora", "Tmax Monomax"
-        ];
-
-        let latestData = [];
-
-        window.onload = () => {
-            populateDropdown(defaultNames); 
-            loadCachedNames(); 
-            loadData(); 
-        };
+        // โหลดข้อมูลจาก Cache ทันทีที่เข้าเว็บ (หน้าเว็บจะไม่ค้าง)
+        let latestData = JSON.parse(localStorage.getItem('summer_city_data')) || [];
         
-        setInterval(loadData, 30000);
+        window.onload = () => {
+            if (latestData.length > 0) {
+                renderUI(latestData); // โชว์ข้อมูลเดิมทันที โหลดไวจัด
+            }
+            fetchDataFromServer(); // ดึงข้อมูลใหม่เงียบๆ เบื้องหลัง
+            setInterval(fetchDataFromServer, 20000); // ดึงออโต้ทุก 20 วิ
+        };
 
         function switchPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -201,40 +238,10 @@
             if(pageId === 'summary') renderSummary();
         }
 
-        function loadCachedNames() {
-            const cached = localStorage.getItem('summerCityNames');
-            if (cached) {
-                const names = JSON.parse(cached);
-                if(names.length > defaultNames.length) populateDropdown(names);
-            }
-        }
-
-        function populateDropdown(names) {
-            const select = document.getElementById('mechanicName');
-            const currentValue = select.value;
-            if (select.options.length > 1 && select.options.length === names.length + 1) return;
-
-            select.innerHTML = '<option value="" disabled selected>เลือกชื่อของคุณ...</option>';
-            names.forEach(name => {
-                let option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                select.appendChild(option);
-            });
-            
-            if(currentValue) {
-                select.value = currentValue;
-                updateButtonState();
-            }
-        }
-
         function updateButtonState() {
             const name = document.getElementById('mechanicName').value;
             const btnIn = document.getElementById('btnIn');
             const btnOut = document.getElementById('btnOut');
-
-            btnIn.innerText = "เข้าเวร";
-            btnOut.innerText = "ออกเวร";
 
             if (!name) {
                 btnIn.disabled = false; btnOut.disabled = false; return;
@@ -243,67 +250,85 @@
             const user = latestData.find(u => u.name === name);
             if (user) {
                 if (user.isOnline) {
-                    btnIn.disabled = true;  
-                    btnOut.disabled = false; 
+                    btnIn.disabled = true; btnOut.disabled = false;
                 } else {
-                    btnIn.disabled = false;
-                    btnOut.disabled = true; 
+                    btnIn.disabled = false; btnOut.disabled = true;
                 }
-            } else {
-                btnIn.disabled = false; btnOut.disabled = true;
             }
         }
 
-        function loadData() {
-            if (!scriptURL || scriptURL.includes('ใส่_URL')) return;
+        function fetchDataFromServer() {
+            if (!scriptURL) return;
+            document.getElementById('loadingIndicator').style.display = 'inline'; // โชว์ว่ากำลังซิงค์
 
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
                 .then(result => {
-                    if(result.status === "error") throw new Error(result.message);
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                    if(result.status === "error") {
+                        console.error('API Error:', result.message);
+                        return;
+                    }
                     
                     latestData = result.data;
-                    const nameList = latestData.map(u => u.name);
-                    
-                    localStorage.setItem('summerCityNames', JSON.stringify(nameList)); 
-                    populateDropdown(nameList); 
-
-                    const statusList = document.getElementById('statusList');
-                    statusList.innerHTML = '';
-                    latestData.forEach(user => {
-                        let statusHtml = `
-                            <div class="status-item">
-                                <div class="user-name">${user.name}</div>
-                                <div class="status-indicator">
-                                    <span class="status-text" style="color: ${user.isOnline ? '#00e676' : '#636e72'}">
-                                        ${user.isOnline ? 'On Duty' : 'Off Duty'}
-                                    </span>
-                                    <div class="dot ${user.isOnline ? 'dot-online' : 'dot-offline'}"></div>
-                                    ${user.isOnline ? `<span class="time-in">${user.timeInText}</span>` : `<span class="time-in" style="opacity: 0">00:00</span>`}
-                                </div>
-                            </div>
-                        `;
-                        statusList.insertAdjacentHTML('beforeend', statusHtml);
-                    });
-
-                    updateButtonState();
-                    if(document.getElementById('summaryPage').classList.contains('active')) renderSummary();
+                    localStorage.setItem('summer_city_data', JSON.stringify(latestData)); // บันทึกแคช
+                    renderUI(latestData); // อัปเดตหน้าจอด้วยข้อมูลใหม่
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    if(latestData.length === 0) {
-                        document.getElementById('statusList').innerHTML = '<div style="color: #ff4757; text-align: center; margin-top: 30px;">⚠️ โหลดข้อมูลล้มเหลว กรุณารีเฟรชหน้าเว็บ</div>';
-                    }
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                    console.error('Connection Error:', error);
                 });
+        }
+
+        function renderUI(data) {
+            const select = document.getElementById('mechanicName');
+            const statusList = document.getElementById('statusList');
+            const currentValue = select.value;
+
+            // Render Select Options
+            if (select.options.length <= 1 || data.length > select.options.length - 1) {
+                select.innerHTML = '<option value="" disabled selected>ระบุชื่อช่าง...</option>';
+                data.forEach(user => {
+                    let option = document.createElement('option');
+                    option.value = user.name; option.textContent = user.name;
+                    select.appendChild(option);
+                });
+            }
+
+            // Render Status List
+            statusList.innerHTML = '';
+            data.forEach(user => {
+                let statusHtml = `
+                    <div class="status-item">
+                        <div class="user-name">${user.name}</div>
+                        <div class="status-indicator">
+                            <span class="status-text" style="color: ${user.isOnline ? '#00e676' : '#636e72'}">
+                                ${user.isOnline ? 'On Duty' : 'Off Duty'}
+                            </span>
+                            <div class="dot ${user.isOnline ? 'dot-online' : 'dot-offline'}"></div>
+                            ${user.isOnline ? `<span class="time-in">${user.timeInText}</span>` : `<span class="time-in" style="opacity: 0">00:00</span>`}
+                        </div>
+                    </div>
+                `;
+                statusList.insertAdjacentHTML('beforeend', statusHtml);
+            });
+
+            if(currentValue) {
+                select.value = currentValue;
+                updateButtonState(); 
+            }
+            if(document.getElementById('summaryPage').classList.contains('active')) renderSummary();
         }
 
         function renderSummary() {
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = '';
+            
             if (latestData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">ยังไม่มีข้อมูลในระบบ</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">ไม่มีข้อมูล</td></tr>';
                 return;
             }
+
             latestData.forEach(user => {
                 let html = `
                     <tr>
@@ -320,15 +345,8 @@
             const name = document.getElementById('mechanicName').value;
             if (!name) return alert('กรุณาเลือกชื่อก่อนบันทึกเวลา');
 
-            const btnIn = document.getElementById('btnIn');
-            const btnOut = document.getElementById('btnOut');
-
-            // เปลี่ยนข้อความปุ่มและล็อคปุ่มกันกดซ้ำ
-            if(actionType === 'เข้าเวร') btnIn.innerText = "⏳ กำลังบันทึก...";
-            if(actionType === 'ออกเวร') btnOut.innerText = "⏳ กำลังบันทึก...";
-            
-            btnIn.disabled = true;
-            btnOut.disabled = true;
+            document.getElementById('btnIn').disabled = true;
+            document.getElementById('btnOut').disabled = true;
 
             fetch(scriptURL, {
                 method: 'POST',
@@ -337,38 +355,46 @@
             .then(response => response.json())
             .then(data => {
                 alert((data.status === 'success' ? '✅ ' : '⚠️ ') + data.msg);
-                if(data.status === 'success') loadData();
-                else updateButtonState();
-            })
-            .catch(error => {
-                // ถ้าเน็ตหลุด หรือ เซิร์ฟเวอร์ตาย ปุ่มจะเด้งกลับมาให้ใช้งานได้อีกครั้ง
-                alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองกดใหม่อีกครั้ง');
-                updateButtonState();
+                if(data.status === 'success') {
+                    // แกล้งอัปเดตหน้าจอทันที เพื่อความรวดเร็วโดยไม่ต้องรอเซิร์ฟเวอร์
+                    let user = latestData.find(u => u.name === name);
+                    if(user) {
+                        user.isOnline = (actionType === 'เข้าเวร');
+                        let now = new Date();
+                        user.timeInText = actionType === 'เข้าเวร' ? ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) : "";
+                        renderUI(latestData);
+                    }
+                    fetchDataFromServer(); 
+                } else {
+                    updateButtonState(); 
+                }
             });
         }
 
         function exportSummary() {
-            if (latestData.length === 0) return alert("ข้อมูลยังโหลดไม่เสร็จ หรือไม่มีข้อมูลให้คัดลอกครับ");
+            if (latestData.length === 0) return alert("ไม่มีข้อมูลให้คัดลอกครับ");
+            
             let textOutput = "📊 สรุปเวลาเข้าเวร\n\n";
             latestData.forEach(user => {
-                textOutput += `ช่าง: ${user.name}\nรวมเวลารายวัน: ${user.todayText}\nรวมเวลารายสัปดาห์: ${user.weekText}\n----------------------\n`;
+                textOutput += `ช่าง: ${user.name}\n`;
+                textOutput += `รวมเวลารายวัน: ${user.todayText}\n`;
+                textOutput += `รวมเวลารายสัปดาห์: ${user.weekText}\n`;
+                textOutput += `----------------------\n`;
             });
+
             navigator.clipboard.writeText(textOutput).then(() => {
-                alert("📋 คัดลอกข้อมูลเรียบร้อย นำไปวางส่งงานได้เลย!");
-            });
+                alert("📋 คัดลอกข้อมูลสรุปเวลาเรียบร้อยแล้ว!");
+            }).catch(err => alert("❌ เกิดข้อผิดพลาดในการคัดลอก: " + err));
         }
 
         function resetSummary() {
-            const password = prompt("⚠️ คำเตือน: ข้อมูลการเข้าออกเวรทั้งหมดจะถูกลบ!\n\nกรุณาใส่รหัสผ่านเพื่อยืนยัน:");
+            const password = prompt("⚠️ คำเตือน: ข้อมูลจะถูกลบทิ้งทั้งหมด!\nกรุณาใส่รหัสผ่านเพื่อยืนยัน:");
             if (password === "Kapi0625") {
-                if (confirm("แน่ใจหรือไม่ว่าจะล้างข้อมูลทั้งหมด?")) {
-                    fetch(scriptURL, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'resetData' })
-                    })
-                    .then(r => r.json())
-                    .then(data => { alert(data.msg); loadData(); })
-                    .catch(e => alert('❌ เกิดข้อผิดพลาดในการเชื่อมต่อ'));
+                if (confirm("แน่ใจไหมว่าจะล้างข้อมูลทั้งหมด?")) {
+                    fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: 'resetData' }) })
+                    .then(response => response.json())
+                    .then(data => { alert(data.msg); fetchDataFromServer(); })
+                    .catch(error => alert('❌ เกิดข้อผิดพลาด'));
                 }
             } else if (password !== null) {
                 alert("❌ รหัสผ่านไม่ถูกต้อง!");
