@@ -331,8 +331,8 @@
     </div>
 
     <script>
-        // อย่าลืมเช็ค URL ว่าเป็นอันล่าสุดที่ Deploy ใหม่ (ถ้ามี)
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwdD5OWZJ39GCrc_jKgmGYeq-JCyl9JLPLvT9ieOb1Xk4pP-OlwMn5kgi0SXgjv6_qP8w/exec';
+        // ⚠️ อย่าลืมเช็ค URL ว่าเป็นอันล่าสุดที่ Deploy มาใหม่นะครับ
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxBm10JfHfujrT4fljeWKYsMz2XIVNfGEh_avDQeTCYtb-Ud33Or_Dxa6hFhwvLbOT1NQ/exec';
 
         // โหลดข้อมูลจาก Cache
         let latestData = JSON.parse(localStorage.getItem('summer_city_data')) || [];
@@ -379,7 +379,10 @@
             if (!scriptURL) return;
             document.getElementById('loadingIndicator').style.display = 'inline';
 
-            fetch(scriptURL + '?action=getData')
+            // เพิ่มพารามิเตอร์เวลาต่อท้าย URL เพื่อป้องกันเบราว์เซอร์จำ Cache เก่ามาแสดง
+            let noCacheUrl = scriptURL + '?action=getData&nocache=' + new Date().getTime();
+
+            fetch(noCacheUrl)
                 .then(response => response.json())
                 .then(result => {
                     document.getElementById('loadingIndicator').style.display = 'none';
@@ -478,18 +481,16 @@
                 alert((data.status === 'success' ? '✅ ' : '⚠️ ') + data.msg);
                 if(data.status === 'success') {
                     
-                    // อัปเดต Cache ของเครื่องทันที ป้องกันรีเฟรชแล้วปุ่มหลุด
                     let user = latestData.find(u => u.name === name);
                     if(user) {
                         user.isOnline = (actionType === 'เข้าเวร');
-                        // ให้แสดงคำว่าซิงค์ระหว่างรอเวลาจริงจากเซิร์ฟเวอร์
                         user.timeInText = actionType === 'เข้าเวร' ? "ซิงค์..." : "";
                         localStorage.setItem('summer_city_data', JSON.stringify(latestData));
                         renderUI(latestData);
                     }
 
-                    // หน่วงเวลา 2 วินาทีให้ Google Sheet ประมวลผลและเซฟข้อมูลเสร็จ ค่อยดึงเวลาจริงมาแสดง
-                    setTimeout(fetchDataFromServer, 2000); 
+                    // พอบันทึกเสร็จ ให้สาดดึงข้อมูลสดจากชีททันที ไม่ต้องรอเวลาแล้ว
+                    fetchDataFromServer(); 
                 } else {
                     updateButtonState(); 
                 }
