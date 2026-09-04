@@ -331,18 +331,18 @@
     </div>
 
     <script>
-        // 📌 Web App URL อันใหม่ล่าสุด
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwGxWYMtX0JTFOLD6zD6iCN8XtGP55n_wvHWdaXUqk87p1f9jRyP7xpmv6V73yj3cz9uA/exec';
+        // อย่าลืมเช็ค URL ว่าเป็นอันล่าสุดที่ Deploy ใหม่ (ถ้ามี)
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzOJ7wc8SSo-auip7xO444IugtV-TVrPun43hP-xkXLq2KRbgu1XzXot51NA_jgAXpl0Q/exec';
 
-        // โหลดข้อมูลจาก Cache ทันทีที่เข้าเว็บ (หน้าเว็บจะไม่ค้าง)
+        // โหลดข้อมูลจาก Cache
         let latestData = JSON.parse(localStorage.getItem('summer_city_data')) || [];
         
         window.onload = () => {
             if (latestData.length > 0) {
-                renderUI(latestData); // โชว์ข้อมูลเดิมทันที โหลดไวจัด
+                renderUI(latestData);
             }
-            fetchDataFromServer(); // ดึงข้อมูลใหม่เงียบๆ เบื้องหลัง
-            setInterval(fetchDataFromServer, 20000); // ดึงออโต้ทุก 20 วิ
+            fetchDataFromServer(); 
+            setInterval(fetchDataFromServer, 20000); 
         };
 
         function switchPage(pageId) {
@@ -362,6 +362,9 @@
                 btnIn.disabled = false; btnOut.disabled = false; return;
             }
 
+            // จำชื่อที่เลือกล่าสุดลงเครื่อง รีเฟรชเว็บจะได้ไม่หลุด
+            localStorage.setItem('selectedMechanic', name); 
+
             const user = latestData.find(u => u.name === name);
             if (user) {
                 if (user.isOnline) {
@@ -374,7 +377,7 @@
 
         function fetchDataFromServer() {
             if (!scriptURL) return;
-            document.getElementById('loadingIndicator').style.display = 'inline'; // โชว์ว่ากำลังซิงค์
+            document.getElementById('loadingIndicator').style.display = 'inline';
 
             fetch(scriptURL + '?action=getData')
                 .then(response => response.json())
@@ -386,8 +389,8 @@
                     }
                     
                     latestData = result.data;
-                    localStorage.setItem('summer_city_data', JSON.stringify(latestData)); // บันทึกแคช
-                    renderUI(latestData); // อัปเดตหน้าจอด้วยข้อมูลใหม่
+                    localStorage.setItem('summer_city_data', JSON.stringify(latestData)); 
+                    renderUI(latestData);
                 })
                 .catch(error => {
                     document.getElementById('loadingIndicator').style.display = 'none';
@@ -398,7 +401,9 @@
         function renderUI(data) {
             const select = document.getElementById('mechanicName');
             const statusList = document.getElementById('statusList');
-            const currentValue = select.value;
+            
+            // ดึงชื่อที่เลือกไว้ล่าสุดจาก Storage
+            const currentValue = select.value || localStorage.getItem('selectedMechanic');
 
             // Render Select Options
             if (select.options.length <= 1 || data.length > select.options.length - 1) {
@@ -421,13 +426,14 @@
                                 ${user.isOnline ? 'On Duty' : 'Off Duty'}
                             </span>
                             <div class="dot ${user.isOnline ? 'dot-online' : 'dot-offline'}"></div>
-                            ${user.isOnline ? `<span class="time-in">${user.timeInText}</span>` : `<span class="time-in" style="opacity: 0">00:00</span>`}
+                            ${user.isOnline ? `<span class="time-in">${user.timeInText || ''}</span>` : `<span class="time-in" style="opacity: 0">00:00</span>`}
                         </div>
                     </div>
                 `;
                 statusList.insertAdjacentHTML('beforeend', statusHtml);
             });
 
+            // คืนค่าที่เลือกล่าสุดและล็อคปุ่ม
             if(currentValue) {
                 select.value = currentValue;
                 updateButtonState(); 
@@ -471,18 +477,27 @@
             .then(data => {
                 alert((data.status === 'success' ? '✅ ' : '⚠️ ') + data.msg);
                 if(data.status === 'success') {
-                    // แกล้งอัปเดตหน้าจอทันที เพื่อความรวดเร็วโดยไม่ต้องรอเซิร์ฟเวอร์
+                    
+                    // อัปเดต Cache ของเครื่องทันที ป้องกันรีเฟรชแล้วปุ่มหลุด
                     let user = latestData.find(u => u.name === name);
                     if(user) {
                         user.isOnline = (actionType === 'เข้าเวร');
-                        let now = new Date();
-                        user.timeInText = actionType === 'เข้าเวร' ? ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) : "";
+                        // ให้แสดงคำว่าซิงค์ระหว่างรอเวลาจริงจากเซิร์ฟเวอร์
+                        user.timeInText = actionType === 'เข้าเวร' ? "ซิงค์..." : "";
+                        localStorage.setItem('summer_city_data', JSON.stringify(latestData));
                         renderUI(latestData);
                     }
-                    fetchDataFromServer(); 
+
+                    // หน่วงเวลา 2 วินาทีให้ Google Sheet ประมวลผลและเซฟข้อมูลเสร็จ ค่อยดึงเวลาจริงมาแสดง
+                    setTimeout(fetchDataFromServer, 2000); 
                 } else {
                     updateButtonState(); 
                 }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('❌ เกิดข้อผิดพลาดในการส่งข้อมูล');
+                updateButtonState();
             });
         }
 
